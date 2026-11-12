@@ -1,0 +1,5 @@
+{
+  "source": "Frozen ABW-B benchmark prefix, prior public-data audit",
+  "algorithm_prefix_sha256": "6bd65dabb2b27a4ba31dbf08e9b60b79230e5e0dbd849b9b67d328dd9e50d6c2",
+  "kind": "Compatibility reference only; not the public API"
+}

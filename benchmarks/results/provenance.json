@@ -1,0 +1,17 @@
+{
+  "frozen_at": "2026-11-12T04:32:54.014278+00:00",
+  "algorithm_prefix_sha256": "6bd65dabb2b27a4ba31dbf08e9b60b79230e5e0dbd849b9b67d328dd9e50d6c2",
+  "measured_source_hashes": {
+    "benchmark.exe": "3f32855811352faecacab956f465cc013dcef4b645ac51727ccce715f7f6f28c",
+    "memory.exe": "085865b08a330b66791bb01018134610727b03051b951d532e1e16a0117a0923",
+    "benchmark.cpp": "4adec651372614ce26c3b4753212459aff7426950b931c903a33dcb202590007",
+    "vendor\\cafs.hpp": "81bd001be3cf0a306ad41639c9a2c113766d49c1004e111d303fbd746f203e9e",
+    "vendor\\cafs2.hpp": "31952eb102348b0bea0faaf22bd6889ef58d11aec2d85950336fa6421fde27a1",
+    "memory_profile.hpp": "239a87187b6045baaabc13f5ef2e6d2a6bd9734f8a1ecaef349d4e61d93a9ff8"
+  },
+  "measured_binary_hashes": {
+    "benchmark.exe": "3f32855811352faecacab956f465cc013dcef4b645ac51727ccce715f7f6f28c",
+    "memory.exe": "085865b08a330b66791bb01018134610727b03051b951d532e1e16a0117a0923"
+  },
+  "notes": "Source hashes refer to the frozen benchmark, not the extracted public header. Executables and original machine paths are not committed."
+}

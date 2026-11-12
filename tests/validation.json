@@ -1,0 +1,14 @@
+{
+  "compiler": "LLVM-MinGW clang23.1.5",
+  "flags": "-std=c++17 -O3 -DNDEBUG -static",
+  "base_cases": 61,
+  "real_column_cases": 9,
+  "total_cases": 70,
+  "direct_cases": 20,
+  "mixed_partition_cases": 28,
+  "policy_and_bit_fields_match": true,
+  "public_sort_equals_std_sort": true,
+  "execution_matches_frozen_B": true,
+  "MSVC_validated": false,
+  "public_header_performance_measured": false
+}

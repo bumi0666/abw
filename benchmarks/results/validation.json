@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "real_inputs": 9,
+  "public_dataset_sources": 3,
+  "synthetic_regression_inputs": 42,
+  "fresh_timing_processes": 153,
+  "timed_sorts": 5004,
+  "timed_sorts_by_group": {
+    "real": 1323,
+    "synthetic_regression": 3681
+  },
+  "memory_processes": 288,
+  "exact_output_checks_passed": true,
+  "input_hashes_verified": true,
+  "independent_numpy_reference_verified": true,
+  "method_order_balanced": true,
+  "all_E_B_choices_match": true,
+  "all_B_flags_match_audit": true,
+  "production_no_heap_instrumentation": true,
+  "profile_heap_returns_to_zero": true,
+  "no_ABW_modification": true,
+  "preregistered_protocol_hash_verified": true,
+  "second_real_hardware_test": false,
+  "packaged_header_build_passed": true,
+  "packaged_profile_build_passed": true,
+  "packaged_64byte_counting_reference_passed": true,
+  "reproduction_entrypoint_syntax_checked": true,
+  "new_hardware_end_to_end_replay": false
+}

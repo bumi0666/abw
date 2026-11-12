@@ -1,0 +1,3 @@
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),M=require('./frozen/outputs/sort_experiment_M.cjs');
+const design=JSON.parse(fs.readFileSync(path.join(__dirname,'design_preregistered.json'),'utf8'));
+for(const n of design.regression.sizes)for(const kind of design.regression.distributions){const a=M.make(n,kind,design.regression.seed),name=`synthetic_${n}_${kind}`,p=path.join(__dirname,'inputs',name),expected=a.slice().sort(),b=x=>Buffer.from(x.buffer,x.byteOffset,x.byteLength);fs.writeFileSync(p+'.bin',b(a));fs.writeFileSync(p+'.expected.bin',b(expected));console.log(name,flush=true);}

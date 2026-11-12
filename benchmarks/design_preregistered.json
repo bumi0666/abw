@@ -1,0 +1,149 @@
+{
+  "frozen_at": "2026-11-12T04:32:54.014278+00:00",
+  "purpose": "Real workload practicality audit, no algorithm changes or outcome-dependent input choice",
+  "evidence": [
+    {
+      "path": "outputs/sort_experiment_M.cpp",
+      "exists": true,
+      "sha256": "37ffba8fb3463918429c462551afa09e2ad573a6bb0eabef4eb376b7a27f8515"
+    },
+    {
+      "path": "outputs/sort_experiment_M_report.md",
+      "exists": true,
+      "sha256": "feb30932a814b7f391c459c24f561bc2e7012d1708d38329523abfce33a8707c"
+    },
+    {
+      "path": "outputs/sort_experiment_M_summary.json",
+      "exists": true,
+      "sha256": "82f59fd8cbde9a181d0fca761366763bc6b33e33644fee3c3acc5dab3ff15301"
+    },
+    {
+      "path": "outputs/sort_experiment_M_pdq_structural_20261112T015535Z_e408685c_report.md",
+      "exists": true,
+      "sha256": "f003bfa00ef353eecf02c4e9adc2ae690973dd2f32cd64b572850cb5af45af2c"
+    },
+    {
+      "path": "outputs/sort_experiment_M_pdq_swap_20261112T035121Z_69fe2964_report.md",
+      "exists": true,
+      "sha256": "870ab31787f28ec5371d89dd5f654cf5dd77d212d416af5495203ce7e12c5f54"
+    },
+    {
+      "path": "outputs/sort_experiment_M_pdq_B_assembly_review.md",
+      "exists": true,
+      "sha256": "af8c535bfcf671d974e924a24bd945426643ed0608d9f78706193e38e6716d4c"
+    },
+    {
+      "path": "work/M_pdq_swap_kernel.cpp",
+      "exists": true,
+      "sha256": "b3b1d7bcad4d75cc04bc9030bd53da7ff6e7634d13a0a1e238c5138301136339"
+    }
+  ],
+  "datasets": [
+    {
+      "name": "NASA July1995 HTTP",
+      "url": "https://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz",
+      "page": "https://ita.ee.lbl.gov/html/contrib/NASA-HTTP.html",
+      "license": "Freely redistributable per publisher; no named SPDX license; traffic-pattern-only request",
+      "columns": [
+        "response_status",
+        "unix_seconds_timestamp",
+        "response_bytes"
+      ],
+      "ordering": "published file order",
+      "extraction": "All valid rows in full July file. Status/timestamp independently retained if parseable; bytes dash missing omitted for bytes only; rejected line counts recorded."
+    },
+    {
+      "name": "Covertype",
+      "url": "https://archive.ics.uci.edu/static/public/31/covertype.zip",
+      "page": "https://archive.ics.uci.edu/dataset/31/covertype",
+      "license": "CC BY 4.0; Jock Blackard 1998 DOI 10.24432/C50K5N",
+      "columns": [
+        "Cover_Type (index54)",
+        "Elevation (index0)",
+        "Horizontal_Distance_To_Roadways (index5)"
+      ],
+      "ordering": "published row order",
+      "extraction": "Full covtype.data.gz; raw integer columns; no rescaling"
+    },
+    {
+      "name": "US Census1990 processed public release",
+      "url": "https://archive.ics.uci.edu/static/public/116/us+census+data+1990.zip",
+      "page": "https://archive.ics.uci.edu/dataset/116/us+census+data+1990",
+      "license": "CC BY 4.0; Meek, Thiesson, Heckerman 2001 DOI10.24432/C5VP42",
+      "columns": [
+        "caseid",
+        "dIndustry",
+        "iSex"
+      ],
+      "ordering": "published file order, which upstream randomized; no additional permutation",
+      "extraction": "Full USCensus1990.data.txt; retain publisher codes unchanged. Upstream discretized/coarsened some fields."
+    }
+  ],
+  "methods": [
+    "pdqsort",
+    "E_pdq",
+    "ABW_B",
+    "Boost_Spreadsort",
+    "CAFS_u32",
+    "CAFS_i32_if_exactly_representable",
+    "Counting_if_range_heap_le_64MiB"
+  ],
+  "CAFS": {
+    "commit": "13488afef446ae88e7ad631ec6f862def896094a",
+    "url": "https://github.com/kexibq-official/cafs-lib",
+    "api": "cafs2::cafs_sort(data,pdqsort_fallback)",
+    "license": "MIT",
+    "native_type": "u32 scalar; i32 AVX2 specialized. Same numeric values and 4-byte elements; signed input clone outside timer; no u64 widening."
+  },
+  "compiler": {
+    "path": "work/F_toolchain/llvm-mingw-20261104-ucrt-x86_64/bin/clang++.exe",
+    "flags": [
+      "-std=c++20",
+      "-O3",
+      "-DNDEBUG",
+      "-mavx2",
+      "-mbmi",
+      "-static",
+      "-pthread"
+    ]
+  },
+  "timing": {
+    "sessions": 3,
+    "repeats": "one Latin cycle equal to eligible method count per input/session",
+    "process": "fresh process per input/session; sequential pinned lowest allowed CPU",
+    "order": "randomized workload order each session; shuffled initial method order then cyclic rotation each repeat",
+    "includes": "analysis and all sort-owned allocations/initialization/free/count/scatter/sort/copy",
+    "excludes": "input load, numeric parsing, input copy, correctness check, logs, warmup",
+    "reference": "exact whole-array equality against sorted input"
+  },
+  "memory": {
+    "mode": "separate instrumented executable and process, global C++ new/delete plus CAFS aligned malloc wrappers tracked; requested heap bytes excludes allocator metadata/stack; OS working set peak also recorded",
+    "Counting_heap_cap": 67108864
+  },
+  "regression": {
+    "distributions": [
+      "uniform",
+      "normal",
+      "exponential",
+      "narrow",
+      "duplicates",
+      "duplicates_narrow",
+      "sorted",
+      "partial",
+      "reverse",
+      "upper_only",
+      "lower_only",
+      "discontinuous",
+      "extreme_skew",
+      "mixture"
+    ],
+    "sizes": [
+      100000,
+      1000000,
+      10000000
+    ],
+    "seed": 406551909,
+    "source": "original M.make unchanged; real/synthetic reported separately"
+  },
+  "decision": "Report A/B/C only if justified. No thresholds/guards/ABW edits. No data replication or shuffling. Differences within 5% called near tie for descriptive win counts; all exact ratios retained. Must not infer independent machines from repeated sessions."
+}

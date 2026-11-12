@@ -1,0 +1,21 @@
+{
+  "reviewed_at": "2026-11-12T04:58:39.974214+00:00",
+  "decision": "B",
+  "label": "적용 범위를 제한해 공개",
+  "scope": "Current 9 real columns, original order, one i5-14500 Windows environment; not a blanket decision for future reproductions",
+  "basis": [
+    "Two columns beat every tested competitor by over 5% in each of three process sessions",
+    "B direct path triggers on only 2/9 real columns",
+    "B loses on geometric mean to both CAFS variants",
+    "Memory cost modest on the two winning columns; mixed road distance uses more heap and loses to specialized methods"
+  ],
+  "no_algorithm_changes": true,
+  "raw_hashes": {
+    "real_session0.jsonl": "7fdc2dc4edbbe9beef42c62200d9aeb91bbf7112af5484ba3e2aa0fa384d1776",
+    "real_session1.jsonl": "be3d9ed80007378bdc50a65460137d08ab7d56a049194ca4e712a9dff28e6992",
+    "real_session2.jsonl": "71820ee7af064395491fd4c6c2f44039028c5347f377bafd6fbb056dd12d9b3e",
+    "synthetic_regression_session0.jsonl": "36556ff8abc9f70cebd6a61e92babf0e2626684d5283d5e02c9cfa1417ebe21a",
+    "synthetic_regression_session1.jsonl": "5a4a9bfb15f2e3a69e4327451b4c6c9ba2ddd31648fb310e3a3d3b8af607ac42",
+    "synthetic_regression_session2.jsonl": "519edcb7644e950900b6f445ed47b173c6421ce1049d789f76aac6f493968f1c"
+  }
+}

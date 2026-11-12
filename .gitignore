@@ -1,0 +1,17 @@
+/build/
+/build-*/
+*.exe
+*.obj
+*.o
+__pycache__/
+*.pyc
+/benchmarks/inputs/
+/benchmarks/downloads/
+/benchmarks/vendor/
+/benchmarks/review/
+/benchmarks/build.json
+/benchmarks/benchmark_manifest.json
+/benchmarks/environment.json
+/benchmarks/*_session*.jsonl
+/benchmarks/memory.jsonl
+/benchmarks/audits.jsonl
