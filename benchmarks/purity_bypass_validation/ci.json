@@ -1,0 +1,8 @@
+{
+  "run_url": "https://github.com/bumi0666/abw/actions/runs/43179871456",
+  "gcc": "success",
+  "clang": "success",
+  "msvc": "success",
+  "cases": 77,
+  "performance_is_not_ci_gate": true
+}

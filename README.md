@@ -39,7 +39,7 @@ ctest --test-dir build -C Release --output-on-failure
 
 The public header is an API extraction of the benchmark implementation.
 The historical performance numbers below belong to the frozen benchmark harness.
-A [separate header validation](benchmarks/header_validation/README.md) measured
+The v0.1.0 [separate header validation](benchmarks/header_validation/README.md) measured
 all nine real and 42 synthetic inputs: header/frozen-B time ratios were 1.0067
 and 0.9983 in geometric mean, respectively. All input-level ratios were within
 a descriptive +/-5% band on the measured machine. Raw session variation and
@@ -47,18 +47,33 @@ follow-up results are included; this is not a statistical equivalence proof.
 Tests compare decisions, selected bit ranges, direct-output decisions and full
 sorted results against the frozen implementation.
 
+## v0.1.1 update
+
+For selected zero-shift partitions, one histogram replaces purity comparisons and
+unused execution metadata. The exact common prefix guarantees reconstruction;
+dispatch and thresholds are unchanged. The four-sub-histogram experiment is not
+included. [Validation and raw records](benchmarks/purity_bypass_validation/README.md)
+cover the prior 9,072-sort comparison and a short 243-sort public-header check.
+Real/synthetic candidate-v0.1.0 geometric mean time ratios were 0.9496/0.9772;
+most real-input improvement came from Covertype elevation. Historical tables below
+remain frozen-B measurements. One performance CPU is covered; cross-CPU performance
+replication is still open.
+
 ## What it does
 
 1. Apply the existing small-input and sampled-order checks.
 2. Sample the input for the existing distribution/duplicate policy.
 3. Determine a contiguous bucket bit range using an exact variation scan.
-4. If splitting is selected, count buckets and compare each bucket's values.
+4. If splitting is selected with `shift == 0`, count and reconstruct values
+   directly: the common prefix proves every bucket contains a single value.
+   Otherwise count buckets and compare each bucket's values.
 5. If every occupied bucket has one distinct value, write values and counts
    directly into the input. Otherwise scatter, sort each bucket with pdqsort,
    and copy back. Stop extra purity checks after the first mismatch.
 
-The policy, thresholds, sample seeds, bit selection, and representative-array
-initialization are retained. No new guard or cost model is introduced here.
+The policy, thresholds, sample seeds and bit selection are retained. Nonzero-shift
+execution retains representative-array initialization. No new guard or cost model
+is introduced here.
 
 ## Measured scope
 
