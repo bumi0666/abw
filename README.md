@@ -10,7 +10,7 @@ integer sorting libraries.
 
 ## Use
 
-Requires C++17, a 64-bit target, a GCC/Clang-compatible compiler, and Boost headers. Boost 1.90.0 and
+Requires C++17, a 64-bit target, GCC, Clang or MSVC, and Boost headers. Boost 1.90.0 and
 LLVM-MinGW Clang 23.1.5 were used in the recorded experiments.
 
 ```cpp
@@ -38,10 +38,14 @@ ctest --test-dir build -C Release --output-on-failure
 ```
 
 The public header is an API extraction of the benchmark implementation.
-Recorded performance numbers below belong to the frozen benchmark harness,
-not a separate performance measurement of the packaged header. Tests compare
-its decisions, selected bit ranges, direct-output decisions and sorted results
-against that frozen implementation.
+The historical performance numbers below belong to the frozen benchmark harness.
+A [separate header validation](benchmarks/header_validation/README.md) measured
+all nine real and 42 synthetic inputs: header/frozen-B time ratios were 1.0067
+and 0.9983 in geometric mean, respectively. All input-level ratios were within
+a descriptive +/-5% band on the measured machine. Raw session variation and
+follow-up results are included; this is not a statistical equivalence proof.
+Tests compare decisions, selected bit ranges, direct-output decisions and full
+sorted results against the frozen implementation.
 
 ## What it does
 
@@ -112,8 +116,8 @@ implementation. See the full report before interpreting the ratios.
   come from this fallback rather than the new fast path.
 - Success on a cardinality or value range alone does not predict success on
   another arrangement of the same values.
-- The current packaged API was validated locally with Clang. The MSVC bit-scan
-  compatibility branch has not been validated with MSVC.
+- C++17 build and correctness CI passed GCC 13.3, Clang 18.1 and MSVC 19.51
+  on x64. Performance measurements remain limited to the local Windows CPU.
 
 ## License
 

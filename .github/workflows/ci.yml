@@ -1,0 +1,39 @@
+name: Build and correctness
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  conformance:
+    name: ${{ matrix.compiler }} / C++17
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, compiler: GCC, cxx: g++}
+          - {os: ubuntu-24.04, compiler: Clang, cxx: clang++}
+          - {os: windows-2025, compiler: MSVC, cxx: cl}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fetch verified Boost headers
+        shell: bash
+        run: |
+          curl --fail --location --retry 3 https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.gz -o boost.tar.gz
+          echo "5e93d582aff26868d581a52ae78c7d8edf3f3064742c6e77901a1f18a437eea9  boost.tar.gz" | sha256sum --check
+          tar -xzf boost.tar.gz boost_1_90_0/boost
+      - name: Configure GCC or Clang
+        if: runner.os != 'Windows'
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_CXX_STANDARD=17 -DABW_BOOST_INCLUDE_DIR=${{ github.workspace }}/boost_1_90_0
+      - name: Configure MSVC
+        if: runner.os == 'Windows'
+        run: cmake -S . -B build -A x64 -DCMAKE_CXX_STANDARD=17 -DABW_BOOST_INCLUDE_DIR="${{ github.workspace }}/boost_1_90_0"
+      - name: Build
+        run: cmake --build build --config Release --parallel 2
+      - name: Correctness and frozen-policy conformance
+        run: ctest --test-dir build -C Release --output-on-failure

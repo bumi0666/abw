@@ -1,5 +1,5 @@
 #include <abw/abw.hpp>
-#include "reference/frozen_prefix.hpp"
+#include "reference_compat.hpp"
 #include <limits>
 #include <stdexcept>
 
