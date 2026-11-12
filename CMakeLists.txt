@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(abw VERSION 0.1.0 LANGUAGES CXX)
+project(abw VERSION 0.1.1 LANGUAGES CXX)
 
 find_path(ABW_BOOST_INCLUDE_DIR boost/sort/pdqsort/pdqsort.hpp
     HINTS ${BOOST_ROOT} ENV BOOST_ROOT PATH_SUFFIXES include)

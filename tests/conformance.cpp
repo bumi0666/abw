@@ -74,6 +74,28 @@ int main(int argc, char** argv) {
             if (position >= 0) a[std::size_t(position)] = 0x1235u;
             check(a);
         }
+        // Explicitly exercise prefix reconstruction, both bucket widths and tails.
+        std::size_t prefix_cases = 0;
+        for (U base : {0x12345000u, 0xfffff000u}) {
+            for (unsigned bits : {8u, 12u}) {
+                for (std::size_t n : {100000u, 100001u, 100002u, 100003u}) {
+                    V a(n);
+                    const U mask = (U(1) << bits) - 1;
+                    for (auto& v : a) v = base | (r.next() & mask);
+                    a[0] = base;
+                    a[1] = base | mask;
+                    const auto d = abw::detail::choose(a);
+                    const auto want = bits == 8 ? abw::detail::strategy::active8
+                                                : abw::detail::strategy::active12;
+                    if (d.selected != want || d.bits != bits || d.shift != 0 ||
+                        (a[0] & ~mask) == 0)
+                        throw std::runtime_error("prefix test did not enter shortcut");
+                    check(a);
+                    ++prefix_cases;
+                }
+            }
+        }
+        if (prefix_cases != 16) throw std::runtime_error("prefix coverage");
         for (int i = 1; i < argc; ++i) check(load(argv[i]));
         std::cout << "PASS cases=" << checked << " direct=" << direct
                   << " partitioned=" << partitioned << '\n';

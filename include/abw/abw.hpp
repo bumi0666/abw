@@ -107,6 +107,23 @@ inline decision choose(const array_type& a) {
 
 // Exact B execution path. Representative zero initialization is retained.
 inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
+    // choose() has proved that all bits above mask are common.
+    if (shift == 0) {
+        const std::size_t B = std::size_t(1) << bits;
+        const value_type mask = static_cast<value_type>(B - 1);
+        const value_type prefix = a[0] & ~mask;
+        std::vector<std::size_t> counts(B);
+        for (const auto value : a) ++counts[value & mask];
+        std::size_t position = 0;
+        for (std::size_t b = 0; b < B; ++b) {
+            if (counts[b]) {
+                std::fill_n(a.begin() + position, counts[b], prefix | static_cast<value_type>(b));
+                position += counts[b];
+            }
+        }
+        return true;
+    }
+
     const std::size_t bucket_count = std::size_t(1) << bits;
     const value_type mask = static_cast<value_type>(bucket_count - 1);
     std::vector<std::size_t> counts(bucket_count), starts(bucket_count + 1);
