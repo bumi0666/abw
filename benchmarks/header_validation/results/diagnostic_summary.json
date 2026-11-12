@@ -1,0 +1,69 @@
+{
+  "selection": "All seven inputs with any primary process header/B ratio outside [0.95,1.05]; three fresh processes each; same binary; diagnostic only; not pooled with primary results",
+  "timed_sorts": 567,
+  "inputs": [
+    {
+      "name": "nasa_timestamp",
+      "ratios": [
+        1.0004261363636364,
+        1.018491448618623,
+        1.099956159579132
+      ],
+      "median": 1.018491448618623
+    },
+    {
+      "name": "synthetic_10000000_sorted",
+      "ratios": [
+        1.0064937552677955,
+        0.9957850742039457,
+        0.9913416625526905
+      ],
+      "median": 0.9957850742039457
+    },
+    {
+      "name": "synthetic_1000000_discontinuous",
+      "ratios": [
+        0.9762497199259423,
+        0.9241150836001423,
+        0.9823554693398693
+      ],
+      "median": 0.9762497199259423
+    },
+    {
+      "name": "synthetic_1000000_upper_only",
+      "ratios": [
+        1.0108345764308708,
+        1.0360860513532268,
+        1.036469555502354
+      ],
+      "median": 1.0360860513532268
+    },
+    {
+      "name": "synthetic_100000_narrow",
+      "ratios": [
+        0.9986931119311193,
+        1.0903477921062914,
+        0.9891209112149534
+      ],
+      "median": 0.9986931119311193
+    },
+    {
+      "name": "synthetic_100000_sorted",
+      "ratios": [
+        0.9940298507462687,
+        0.9452054794520549,
+        0.9924433249370277
+      ],
+      "median": 0.9924433249370277
+    },
+    {
+      "name": "synthetic_100000_upper_only",
+      "ratios": [
+        1.0011709601873537,
+        1.006440281030445,
+        1.0191846522781776
+      ],
+      "median": 1.006440281030445
+    }
+  ]
+}

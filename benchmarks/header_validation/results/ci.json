@@ -1,0 +1,30 @@
+{
+  "run_url": "https://github.com/bumi0666/abw/actions/runs/43167684707",
+  "commit": "25a3f117f2d70524f2f9cf644618fbcc4d10650b",
+  "jobs": [
+    {
+      "id": 131013285771,
+      "name": "MSVC / C++17",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 131013286097,
+      "name": "GCC / C++17",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 131013286110,
+      "name": "Clang / C++17",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "compiler_versions": [
+    "MSVC 19.51.36260.0",
+    "GCC 13.3.0",
+    "Clang 18.1.3"
+  ],
+  "all_success": true
+}
