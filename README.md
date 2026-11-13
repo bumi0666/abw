@@ -87,6 +87,28 @@ most real-input improvement came from Covertype elevation. Historical tables bel
 remain frozen-B measurements. One performance CPU is covered; cross-CPU performance
 replication is still open.
 
+## New real-data validation (separate from development inputs)
+
+The frozen v0.1.2 was tested on nine new columns from UCI Skin Segmentation,
+UCI chest-mounted accelerometer participant 1, and January 2023 NYC TLC Yellow
+Taxi records. Original file order/values were retained, without replication or
+performance-based filtering. This set is not pooled with the nine earlier
+development columns or 42 synthetic inputs.
+
+All 2,544 timed sorts in 27 processes passed full-array correctness checks.
+Geometric-mean speedup versus pdqsort was 1.436x; execution time versus v0.1.1
+decreased 12.1%. ABW was fastest among the tested implementations on Skin red,
+taxi provider and taxi payment. CAFS uint32/int32 still won the new aggregate:
+ABW time was 10.4%/15.8% higher. Direct output fired on 5/9 selected columns.
+
+A new real-data regression is retained: already sorted two-value Skin labels
+took 38.1% longer than v0.1.1 (about 40 microseconds extra) after direct output
+replaced native fallback. Chest x measurements were 19.8% slower than pdqsort.
+Low cardinality or successful direct output does not guarantee a performance
+gain. [Full report, metadata, raw records and Colab CPU reproduction](benchmarks/new_real_v012/README.md)
+include these losses. Local performance still covers one CPU; independent CPU
+verification is a separate step. No new policy or optimization is adopted here.
+
 ## What it does
 
 1. Apply the small-input and sampled-order checks, retaining the exact low-byte

@@ -1,0 +1,11 @@
+{
+  "processes": 27,
+  "timed_sorts": 2544,
+  "full_array_correctness": true,
+  "input_source_hashes_unchanged": true,
+  "public_v012_unchanged": true,
+  "no_github_changes": true,
+  "distinct_data_sources": 3,
+  "new_columns": 9,
+  "second_hardware": false
+}

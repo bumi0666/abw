@@ -1,0 +1,93 @@
+{
+  "scope": "Separate instrumented ABW-only processes, requested C++ new/new[] peak during sort, includes analysis/dispatch; excludes preexisting input/expected buffers, allocator overhead, stack and RSS. Not used for timing.",
+  "build": [
+    "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_toolchain\\llvm-mingw-20261104-ucrt-x86_64\\bin\\clang++.exe",
+    "-std=c++20",
+    "-O3",
+    "-DNDEBUG",
+    "-mavx2",
+    "-mbmi",
+    "-static",
+    "-pthread",
+    "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\abw_new_real_v012\\include",
+    "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_vendor\\boost_1_90_0",
+    "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\ABW_realworld\\vendor",
+    "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\abw_new_real_v012\\memory.cpp",
+    "-o",
+    "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\abw_new_real_v012\\memory.exe"
+  ],
+  "rows": [
+    {
+      "name": "skin_red",
+      "verified": true,
+      "peak_requested_new_bytes": 9448,
+      "total_requested_new_bytes": 19120,
+      "allocation_calls": 191,
+      "live_after_sort": 0
+    },
+    {
+      "name": "skin_label",
+      "verified": true,
+      "peak_requested_new_bytes": 8192,
+      "total_requested_new_bytes": 10320,
+      "allocation_calls": 5,
+      "live_after_sort": 0
+    },
+    {
+      "name": "chest_sequence",
+      "verified": true,
+      "peak_requested_new_bytes": 0,
+      "total_requested_new_bytes": 0,
+      "allocation_calls": 0,
+      "live_after_sort": 0
+    },
+    {
+      "name": "chest_x",
+      "verified": true,
+      "peak_requested_new_bytes": 657188,
+      "total_requested_new_bytes": 668884,
+      "allocation_calls": 156,
+      "live_after_sort": 0
+    },
+    {
+      "name": "chest_activity",
+      "verified": true,
+      "peak_requested_new_bytes": 8192,
+      "total_requested_new_bytes": 10608,
+      "allocation_calls": 12,
+      "live_after_sort": 0
+    },
+    {
+      "name": "taxi_vendor",
+      "verified": true,
+      "peak_requested_new_bytes": 8272,
+      "total_requested_new_bytes": 16464,
+      "allocation_calls": 5,
+      "live_after_sort": 0
+    },
+    {
+      "name": "taxi_payment",
+      "verified": true,
+      "peak_requested_new_bytes": 8392,
+      "total_requested_new_bytes": 16600,
+      "allocation_calls": 9,
+      "live_after_sort": 0
+    },
+    {
+      "name": "taxi_pickup_zone",
+      "verified": true,
+      "peak_requested_new_bytes": 12274248,
+      "total_requested_new_bytes": 12288624,
+      "allocation_calls": 96,
+      "live_after_sort": 0
+    },
+    {
+      "name": "taxi_pickup_time",
+      "verified": true,
+      "peak_requested_new_bytes": 132088,
+      "total_requested_new_bytes": 157472,
+      "allocation_calls": 2060,
+      "live_after_sort": 0
+    }
+  ]
+}

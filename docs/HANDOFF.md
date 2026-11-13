@@ -35,6 +35,17 @@ Dispatch, sample seeds, entropy thresholds and nonzero-shift execution are uncha
 
 The current project position is a limited-scope experimental integer-sort wrapper. Performance gains concentrate in particular inputs. Preserve regressions and raw records. Do not claim general superiority or treat repetitions as independent datasets/hardware.
 
+## New data after v0.1.2 (2026-11-13)
+
+See [separate new9 validation](../benchmarks/new_real_v012/README.md). Released
+code is unchanged. New9 GM speedup vs pdq is 1.436x, with three all-comparator
+wins; CAFS wins the aggregate. Already sorted Skin labels newly regress 38.1%
+vs v0.1.1, about 40 microseconds. A future optimization investigation should
+first examine selecting direct output on sorted low-cardinality inputs, only
+when requested. No fix or additional guard has been adopted. Colab CPU notebook
+is provided for separate cross-environment verification; record actual hardware
+and completion status before claiming reproduction. Keep its results separate.
+
 ## Evidence map
 
 - [Public API](../include/abw/abw.hpp)
