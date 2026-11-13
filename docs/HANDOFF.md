@@ -8,7 +8,7 @@ certificate authorizes the limited direct-output dispatch exception. Wider
 sampled-ordered inputs retain native fallback. No further optimization is implied.
 
 The historical snapshot below describes v0.1.1 and its then-open questions.
-For current code use main or the v0.1.2 tag once published. Other-CPU performance
+For current code use main or the v0.1.2 tag. Other-CPU performance
 replication remains open. Preserve existing raw records and do not automatically
 restart optimization or publish further versions.
 
