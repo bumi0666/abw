@@ -48,24 +48,33 @@ inline unsigned bit_width(value_type value) {
 }
 
 // Called only after the unchanged minimum-size check in choose().
-inline bool ordered_probe(const array_type& a) {
+struct probe_result { bool ordered; value_type variation; };
+inline probe_result probe(const array_type& a) {
     const auto m = std::min<std::size_t>(256, a.size() - 1);
     rng r(0x12577abc);
     std::size_t up = 0, down = 0;
+    value_type variation = 0;
+    const value_type reference = a[0];
     for (std::size_t j = 0; j < m; ++j) {
         const auto lo = j * (a.size() - 1) / m;
         const auto hi = (j + 1) * (a.size() - 1) / m;
         const auto i = lo + r.next() % std::max<std::size_t>(1, hi - lo);
-        up += a[i] < a[i + 1];
-        down += a[i] > a[i + 1];
+        const auto x = a[i], y = a[i + 1];
+        up += x < y;
+        down += x > y;
+        variation |= (x ^ reference) | (y ^ reference);
     }
-    return double(up) / m <= .1 || double(down) / m <= .1;
+    return {double(up) / m <= .1 || double(down) / m <= .1, variation};
 }
 
-// Frozen E policy. No new thresholds, guards, or sample positions.
+// Validated v0.1.2 policy: exact low-byte direct-output exception.
+// Sample positions and the remaining E thresholds are retained.
 inline decision choose(const array_type& a) {
     decision d;
-    if (a.size() < 100000 || ordered_probe(a)) return d;
+    if (a.size() < 100000) return d;
+    const auto order = probe(a);
+    // Keep ordered/native exits unless sampled variation is nonzero and within 8 bits.
+    if (order.ordered && (order.variation == 0 || order.variation > 255u)) return d;
     const auto m = std::min<std::size_t>(a.size() - 1,
                                         a.size() < 1000000 ? 512 : 2048);
     array_type values(m);
@@ -90,6 +99,15 @@ inline decision choose(const array_type& a) {
     }
     const auto width = bit_width(difference);
     d.shift = width > d.bits ? width - d.bits : 0;
+    if (width <= 8) {
+        // Exact whole-array certificate; bypass entropy only for this direct path.
+        d.bits = 8;
+        d.shift = 0;
+        d.selected = strategy::active8;
+        return d;
+    }
+    // A sampled certificate alone cannot authorize partitioning an ordered input.
+    if (order.ordered) return d;
     const value_type mask = (1u << d.bits) - 1;
     std::vector<std::size_t> counts(1u << d.bits);
     for (const auto value : values) ++counts[(value >> d.shift) & mask];
@@ -112,8 +130,21 @@ inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
         const std::size_t B = std::size_t(1) << bits;
         const value_type mask = static_cast<value_type>(B - 1);
         const value_type prefix = a[0] & ~mask;
-        std::vector<std::size_t> counts(B);
-        for (const auto value : a) ++counts[value & mask];
+        std::vector<std::size_t> counts(bits == 8 ? 4 * B : B);
+        if (bits == 8) {
+            std::size_t i = 0;
+            for (; i + 3 < a.size(); i += 4) {
+                ++counts[a[i] & mask];
+                ++counts[B + (a[i + 1] & mask)];
+                ++counts[2 * B + (a[i + 2] & mask)];
+                ++counts[3 * B + (a[i + 3] & mask)];
+            }
+            for (; i < a.size(); ++i) ++counts[a[i] & mask];
+            for (std::size_t b = 0; b < B; ++b)
+                counts[b] += counts[B + b] + counts[2 * B + b] + counts[3 * B + b];
+        } else {
+            for (const auto value : a) ++counts[value & mask];
+        }
         std::size_t position = 0;
         for (std::size_t b = 0; b < B; ++b) {
             if (counts[b]) {

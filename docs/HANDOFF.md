@@ -1,3 +1,19 @@
+# ABW v0.1.2 handoff
+
+Updated 2026-11-13. v0.1.2 adopts the validated selective histogram candidate.
+See the root README and benchmarks/v012_validation/README.md for the current
+implementation, evidence, correctness checks and limitations. Four histograms
+are used only for selected zero-shift 8-bit execution. An exact width <= 8
+certificate authorizes the limited direct-output dispatch exception. Wider
+sampled-ordered inputs retain native fallback. No further optimization is implied.
+
+The historical snapshot below describes v0.1.1 and its then-open questions.
+For current code use main or the v0.1.2 tag once published. Other-CPU performance
+replication remains open. Preserve existing raw records and do not automatically
+restart optimization or publish further versions.
+
+---
+
 # ABW project handoff
 
 Snapshot: 2026-11-12. Read this before continuing the project on another computer or in a new chat. This is a project-state summary, not a transcript of the development conversation.
