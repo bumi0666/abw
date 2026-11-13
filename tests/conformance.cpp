@@ -18,8 +18,13 @@ const char* label(abw::detail::strategy s) {
 void check(const V& input) {
     const auto old = frozen_v012::detail::choose(input);
     const auto now = abw::detail::choose(input);
-    if (int(old.selected) != int(now.selected) || old.bits != now.bits || old.shift != now.shift)
+    if (int(old.selected) != int(now.selected))
         throw std::runtime_error("dispatch differs from frozen reference");
+    // Native exits do not execute bits/shift; B may leave those fields at zero.
+    const bool active = old.selected == frozen_v012::detail::strategy::active8 ||
+                        old.selected == frozen_v012::detail::strategy::active12;
+    if (active && (old.bits != now.bits || old.shift != now.shift))
+        throw std::runtime_error("active bit interval differs from frozen reference");
     auto expected = input;
     std::sort(expected.begin(), expected.end());
     auto actual = input;

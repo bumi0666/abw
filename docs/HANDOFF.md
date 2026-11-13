@@ -1,3 +1,24 @@
+# ABW v0.1.3 handoff
+
+Updated 2026-11-13. v0.1.3 adopts only validated B+D: remove unused detailed
+sampling from the ordered low-byte exception and replace required frequency
+analysis with the fixed table. No dispatch threshold, input, histogram or mixed
+path change. Public header matches the frozen measured candidate except its
+namespace. See benchmarks/v013_validation/README.md for safety and evidence.
+
+The final60 comparison gives 2.69% GM execution-time reduction versus v0.1.2;
+maximum primary regression +3.61% on 10M sorted (pair-only +5.24%). B+D is still
+2.96% slower than CAFS u32 across60. Keep these observations separate from
+historical versions. Cross-CPU B+D timing remains unverified. Release is
+experimental; do not automatically resume optimization or publish new versions.
+
+This section supersedes the historical handoff below. Use the root README,
+v013 validation and the v0.1.3 release state for current work. Raw historical
+records remain unchanged; the earlier experiment descriptions retain their
+original dates and scope.
+
+---
+
 # ABW v0.1.2 handoff
 
 Updated 2026-11-13. v0.1.2 adopts the validated selective histogram candidate.

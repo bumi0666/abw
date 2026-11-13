@@ -1,0 +1,13 @@
+{
+  "inputs": 60,
+  "processes": 180,
+  "timed_correct_sorts": 13920,
+  "all_routes_active_intervals_and_direct_results_match": true,
+  "native_metadata_differences": [],
+  "source_and_input_hashes_verified": true,
+  "BD_frozen": true,
+  "public_header_unchanged": true,
+  "no_github_or_release_changes": true,
+  "no_additional_followup": true,
+  "verdict": "Recommend frozen B+D integration; disclose sorted-input regression and single-CPU limit"
+}
