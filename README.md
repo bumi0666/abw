@@ -101,8 +101,9 @@ replication is still open.
    and copy back. Stop extra purity checks after the first mismatch.
 
 The remaining E thresholds, sample seeds and bit selection are retained. Nonzero-shift
-execution retains representative-array initialization. No new guard or cost model
-is introduced here.
+execution retains representative-array initialization. No new cost model is introduced.
+A sampled low-byte variation condition can reopen the ordered exit; only an exact
+whole-input width certificate authorizes the low-byte direct-output exception.
 
 ## Measured scope
 
