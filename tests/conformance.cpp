@@ -1,5 +1,6 @@
 #include <abw/abw.hpp>
 #include "reference_compat.hpp"
+#include "reference/v012_candidate.hpp"
 #include <limits>
 #include <stdexcept>
 
@@ -15,18 +16,18 @@ const char* label(abw::detail::strategy s) {
     throw std::runtime_error("strategy");
 }
 void check(const V& input) {
-    const auto old = pickE(input);
+    const auto old = frozen_v012::detail::choose(input);
     const auto now = abw::detail::choose(input);
-    if (old.selected != label(now.selected) || old.bits != now.bits || old.shift != now.shift)
+    if (int(old.selected) != int(now.selected) || old.bits != now.bits || old.shift != now.shift)
         throw std::runtime_error("dispatch differs from frozen reference");
     auto expected = input;
     std::sort(expected.begin(), expected.end());
     auto actual = input;
     abw::sort(actual);
     if (actual != expected) throw std::runtime_error("public sort differs from std::sort");
-    if (old.selected == "active8" || old.selected == "active12") {
+    if (old.selected == frozen_v012::detail::strategy::active8 || old.selected == frozen_v012::detail::strategy::active12) {
         auto a = input, b = input;
-        const bool x = bucketSingleS<false>(a, old.bits, old.shift);
+        const bool x = frozen_v012::detail::partition_and_sort(a, old.bits, old.shift);
         const bool y = abw::detail::partition_and_sort(b, now.bits, now.shift);
         if (x != y || a != expected || b != expected)
             throw std::runtime_error("execution path differs from frozen reference");
@@ -96,6 +97,28 @@ int main(int argc, char** argv) {
             }
         }
         if (prefix_cases != 16) throw std::runtime_error("prefix coverage");
+        // Reopened ordered/low-entropy inputs, with nonzero shared prefixes.
+        for (U base : {0u, 0x12345600u, 0xffffff00u}) {
+            for (unsigned form = 0; form < 3; ++form) {
+                V a(100003);
+                for (std::size_t i = 0; i < a.size(); ++i)
+                    a[i] = base | (form == 0 ? U(i >= 65002) : form == 1 ? U(i % 7) : U(0));
+                const auto d = abw::detail::choose(a);
+                if (form != 2 && (d.selected != abw::detail::strategy::active8 || d.shift != 0))
+                    throw std::runtime_error("low-byte direct path not selected");
+                check(a);
+            }
+        }
+        // A late high bit missed by samples must not authorize low-byte output.
+        for (std::size_t pos : {1u, 50001u, 100002u}) {
+            V a(100003);
+            for (std::size_t i = 0; i < a.size(); ++i) a[i] = U(i >= 65002);
+            a[pos] = 0x80000000u;
+            const auto d = abw::detail::choose(a);
+            if (d.selected != abw::detail::strategy::native)
+                throw std::runtime_error("ordered high-bit counterexample partitioned");
+            check(a);
+        }
         for (int i = 1; i < argc; ++i) check(load(argv[i]));
         std::cout << "PASS cases=" << checked << " direct=" << direct
                   << " partitioned=" << partitioned << '\n';

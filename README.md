@@ -1,7 +1,7 @@
 # ABW
 
 Experimental header-only sorting wrapper for `std::vector<std::uint32_t>`.
-It uses the frozen E dispatch policy, Boost pdqsort as its existing sorter,
+It uses an E-derived dispatch policy, Boost pdqsort as its existing sorter,
 and the B exact single-value-bucket fast path.
 
 **Some workloads get faster; others regress.** This is a limited-scope research
@@ -47,6 +47,34 @@ follow-up results are included; this is not a statistical equivalence proof.
 Tests compare decisions, selected bit ranges, direct-output decisions and full
 sorted results against the frozen implementation.
 
+## v0.1.2 update
+
+The validated selective histogram candidate is now the public implementation.
+Zero-shift 8-bit partitions use four sub-histograms; 12-bit partitions retain
+one histogram. The existing order probe also collects bit variation from the
+same sampled values. A nonzero low-byte variation can reopen an ordered exit;
+an exact whole-input scan must then prove variation width <= 8 before direct
+output bypasses the entropy gate. Wider ordered inputs retain native fallback.
+This changes the limited direct-output dispatch exception, not the remaining
+sample seeds, thresholds or mixed-bucket algorithm.
+
+In the [51-input competition comparison](benchmarks/v012_validation/competition/report.md),
+11,376 timed sorts all passed full-array correctness checks. Geometric-mean
+speedups versus pdqsort were 1.788x on nine real columns and 1.432x on 42 synthetic
+inputs. Candidate/v0.1.1 time ratios were 0.8384 and 0.9979. On the real aggregate,
+candidate time was 1.6% below CAFS uint32 and 2.6% above CAFS int32; the small
+aggregate differences do not establish universal superiority. Across all 51
+inputs it remained 5.3% slower than CAFS uint32.
+
+Covertype cover, Census industry and Census sex were fastest among the tested
+implementations. Large losses remain: NASA timestamp took 3.11x CAFS uint32
+time, road distance 4.51x Counting time, and synthetic 10M discontinuous 4.37x
+CAFS uint32 time. Maximum input-level regression versus v0.1.1 was +3.14% in
+this run. [Packaging checks and reproduction](benchmarks/v012_validation/README.md)
+include source/input hashes and raw records. Performance still covers one CPU;
+CAFS int32 and Counting have restricted synthetic eligibility. Historical
+v0.1.0/v0.1.1 results below retain their original scope.
+
 ## v0.1.1 update
 
 For selected zero-shift partitions, one histogram replaces purity comparisons and
@@ -61,7 +89,8 @@ replication is still open.
 
 ## What it does
 
-1. Apply the existing small-input and sampled-order checks.
+1. Apply the small-input and sampled-order checks, retaining the exact low-byte
+   direct-output exception described above.
 2. Sample the input for the existing distribution/duplicate policy.
 3. Determine a contiguous bucket bit range using an exact variation scan.
 4. If splitting is selected with `shift == 0`, count and reconstruct values
@@ -71,7 +100,7 @@ replication is still open.
    directly into the input. Otherwise scatter, sort each bucket with pdqsort,
    and copy back. Stop extra purity checks after the first mismatch.
 
-The policy, thresholds, sample seeds and bit selection are retained. Nonzero-shift
+The remaining E thresholds, sample seeds and bit selection are retained. Nonzero-shift
 execution retains representative-array initialization. No new guard or cost model
 is introduced here.
 
@@ -127,7 +156,8 @@ implementation. See the full report before interpreting the ratios.
 - Uses allocation; `std::bad_alloc` can propagate. No reuse-buffer API.
 - A mixed bucket path needs roughly `4*n` temporary bytes plus sample and
   bucket metadata. The direct-output path avoids the `n`-element temporary.
-- Small or sampled-ordered inputs use pdqsort. Near-baseline performance can
+- Small inputs and sampled-ordered inputs outside the low-byte exception use
+  pdqsort. Near-baseline performance can
   come from this fallback rather than the new fast path.
 - Success on a cardinality or value range alone does not predict success on
   another arrangement of the same values.
