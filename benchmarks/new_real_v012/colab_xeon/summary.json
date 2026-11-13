@@ -1,0 +1,100 @@
+{
+  "metrics": {
+    "v012": {
+      "eligible": 9,
+      "gm_speedup_pdq": 1.5282835436768987,
+      "gm_v012_over_method": 1.0,
+      "wins": 0,
+      "ties": 9,
+      "losses": 0
+    },
+    "v011": {
+      "eligible": 9,
+      "gm_speedup_pdq": 1.2012340177187744,
+      "gm_v012_over_method": 0.7856374669790774,
+      "wins": 5,
+      "ties": 4,
+      "losses": 0
+    },
+    "pdq": {
+      "eligible": 9,
+      "gm_speedup_pdq": 1.0,
+      "gm_v012_over_method": 0.6543288410958735,
+      "wins": 5,
+      "ties": 3,
+      "losses": 1
+    },
+    "spread": {
+      "eligible": 9,
+      "gm_speedup_pdq": 0.7366063132445757,
+      "gm_v012_over_method": 0.481809927929454,
+      "wins": 6,
+      "ties": 0,
+      "losses": 3
+    },
+    "CAFS_u32": {
+      "eligible": 9,
+      "gm_speedup_pdq": 1.4749378181553978,
+      "gm_v012_over_method": 0.9634644816394347,
+      "wins": 3,
+      "ties": 1,
+      "losses": 5
+    },
+    "CAFS_i32": {
+      "eligible": 9,
+      "gm_speedup_pdq": 1.6428525978751485,
+      "gm_v012_over_method": 1.0703794476457995,
+      "wins": 3,
+      "ties": 1,
+      "losses": 5
+    },
+    "counting": {
+      "eligible": 8,
+      "gm_speedup_pdq": 0.8960071536737307,
+      "gm_v012_over_method": 0.5556455186882953,
+      "wins": 6,
+      "ties": 0,
+      "losses": 2
+    }
+  },
+  "subgroups": {
+    "direct": {
+      "n": 5,
+      "gm_speedup_pdq": 2.2244924106829833,
+      "gm_time_vs_v011": 0.6487069613783261
+    },
+    "not_direct": {
+      "n": 4,
+      "gm_speedup_pdq": 0.9559170263323765,
+      "gm_time_vs_v011": 0.9981348564617781
+    },
+    "skin": {
+      "n": 2,
+      "gm_speedup_pdq": 3.2356201959680773,
+      "gm_time_vs_v011": 0.8160625982465631
+    },
+    "chest": {
+      "n": 3,
+      "gm_speedup_pdq": 1.1165689125950986,
+      "gm_time_vs_v011": 0.8789492262506314
+    },
+    "taxi": {
+      "n": 4,
+      "gm_speedup_pdq": 1.3291253455368106,
+      "gm_time_vs_v011": 0.7086231597520988
+    }
+  },
+  "direct_count": 5,
+  "timed_calls": 2544,
+  "processes": 27,
+  "max_vs_pdq": "taxi_pickup_zone",
+  "max_vs_v011": "chest_x",
+  "nominal_v012_winners": [
+    "skin_red",
+    "chest_activity"
+  ],
+  "clear_fastest_vs_non_ABW": [
+    "skin_red",
+    "chest_activity"
+  ]
+}

@@ -24,3 +24,10 @@ The local validation used one Intel i5-14500 Windows CPU. New9 results are not
 pooled with prior data. Colab is a shared hosted runtime with a different
 OS/compiler; algorithm ratios within each machine matter, and differences
 cannot be attributed solely to CPU microarchitecture. No timing is a CI gate.
+
+## Completed second-environment run
+
+[Colab Xeon verification and local comparison](colab_xeon/README.md): 27 processes,
+2,544 correct sorts, same input hashes/routes, actual Intel Xeon @ 2.20GHz,
+GCC 13.3.0. Keep local and hosted results separate. This verifies the new nine
+columns on another CPU/OS/compiler environment, not all prior 51 inputs.

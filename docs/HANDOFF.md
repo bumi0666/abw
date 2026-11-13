@@ -8,8 +8,8 @@ certificate authorizes the limited direct-output dispatch exception. Wider
 sampled-ordered inputs retain native fallback. No further optimization is implied.
 
 The historical snapshot below describes v0.1.1 and its then-open questions.
-For current code use main or the v0.1.2 tag. Other-CPU performance
-replication remains open. Preserve existing raw records and do not automatically
+For current code use main or the v0.1.2 tag. Separate new9 Colab CPU verification
+is recorded below; prior-51 cross-CPU verification remains open. Preserve existing raw records and do not automatically
 restart optimization or publish further versions.
 
 ---
@@ -83,3 +83,14 @@ Before further work, confirm the user's next objective. Do not automatically res
 ## New-chat starter
 
 > Read `docs/HANDOFF.md`, the root README and `benchmarks/purity_bypass_validation/README.md`. Treat v0.1.1 as the released baseline. First report the current code/validation state and outstanding limitations, then carry out the task I specify. Do not assume access to the previous conversation or missing local files.
+
+## Completed Colab CPU run (2026-11-13)
+
+The [new9 Colab Xeon/GCC verification](../benchmarks/new_real_v012/colab_xeon/README.md)
+completed 2,544 correct sorts in 27 processes with matching input/route/header
+checks. v0.1.2 GM speedup vs pdq: 1.528x; time versus v0.1.1: 0.7856. It uses
+a different Intel Xeon hosted CPU, Ubuntu and GCC, so hardware-only attribution
+is not established. This covers new9, not prior development9/synthetic42.
+The historical notes about CPU validation being open predate this completed
+new9 run. No policy fix is adopted. Preserve the local sorted-label regression
+and its differing Colab result; future work remains conditional on user request.

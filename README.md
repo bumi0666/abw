@@ -71,7 +71,7 @@ implementations. Large losses remain: NASA timestamp took 3.11x CAFS uint32
 time, road distance 4.51x Counting time, and synthetic 10M discontinuous 4.37x
 CAFS uint32 time. Maximum input-level regression versus v0.1.1 was +3.14% in
 this run. [Packaging checks and reproduction](benchmarks/v012_validation/README.md)
-include source/input hashes and raw records. Performance still covers one CPU;
+include source/input hashes and raw records. The original competition run covers one CPU;
 CAFS int32 and Counting have restricted synthetic eligibility. Historical
 v0.1.0/v0.1.1 results below retain their original scope.
 
@@ -106,8 +106,11 @@ took 38.1% longer than v0.1.1 (about 40 microseconds extra) after direct output
 replaced native fallback. Chest x measurements were 19.8% slower than pdqsort.
 Low cardinality or successful direct output does not guarantee a performance
 gain. [Full report, metadata, raw records and Colab CPU reproduction](benchmarks/new_real_v012/README.md)
-include these losses. Local performance still covers one CPU; independent CPU
-verification is a separate step. No new policy or optimization is adopted here.
+include these losses. A [separate Colab Xeon/GCC run](benchmarks/new_real_v012/colab_xeon/README.md)
+completed the same 2,544 sorts with matching input hashes and routes: v0.1.2
+was 1.528x pdqsort and reduced time 21.4% versus v0.1.1. Specific winners and
+the sorted-label regression differed across environments. CPU, OS and compiler
+all changed; the two runs are not pooled. No new policy or optimization is adopted here.
 
 ## What it does
 
@@ -185,7 +188,8 @@ implementation. See the full report before interpreting the ratios.
 - Success on a cardinality or value range alone does not predict success on
   another arrangement of the same values.
 - C++17 build and correctness CI passed GCC 13.3, Clang 18.1 and MSVC 19.51
-  on x64. Performance measurements remain limited to the local Windows CPU.
+  on x64. Performance records include the local Windows CPU and a separate Colab Xeon
+  Linux/GCC run on the new nine columns; this does not isolate CPU effects.
 
 ## License
 
