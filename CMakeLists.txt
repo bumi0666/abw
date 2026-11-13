@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(abw VERSION 0.1.2 LANGUAGES CXX)
+project(abw VERSION 0.1.3 LANGUAGES CXX)
 
 find_path(ABW_BOOST_INCLUDE_DIR boost/sort/pdqsort/pdqsort.hpp
     HINTS ${BOOST_ROOT} ENV BOOST_ROOT PATH_SUFFIXES include)
@@ -22,4 +22,7 @@ if(ABW_BUILD_TESTS)
     target_link_libraries(abw_conformance PRIVATE abw::abw Threads::Threads)
     target_include_directories(abw_conformance PRIVATE tests/reference)
     add_test(NAME abw_conformance COMMAND abw_conformance)
+    add_executable(abw_frequency tests/frequency.cpp)
+    target_link_libraries(abw_frequency PRIVATE abw::abw)
+    add_test(NAME abw_frequency COMMAND abw_frequency)
 endif()

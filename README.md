@@ -47,6 +47,38 @@ follow-up results are included; this is not a statistical equivalence proof.
 Tests compare decisions, selected bit ranges, direct-output decisions and full
 sorted results against the frozen implementation.
 
+## v0.1.3 update
+
+v0.1.3 preserves the v0.1.2 sorting policy while reducing preprocessing work.
+The ordered low-byte exception skips detailed sample analysis that cannot
+affect its decision (B). Required sample frequencies use a fixed 4,096-slot
+linear-probing table instead of per-key `unordered_map` allocations (D).
+Sample positions, seeds, thresholds, active bit intervals, histogram selection
+and mixed-bucket execution are unchanged. Unused native bits/shift metadata
+can differ. The header equals the measured B+D candidate except its namespace.
+
+The [separate v0.1.3 comparison](benchmarks/v013_validation/competition/report.md)
+retains all 60 inputs: original real9, new real9 and synthetic42. Across 13,920
+correct timed sorts in 180 processes, geometric-mean execution time decreased
+**2.69% versus v0.1.2** (2.36%, 2.28% and 2.85% by those groups). Same-pair
+views give 2.68–2.72% overall. pdqsort speedups were 1.853x, 1.499x and 1.479x;
+all60 1.533x. CAFS u32 remained 2.96% faster in execution-time terms overall
+(ABW time / CAFS time = 1.0296); CAFS i32 was faster on its supported subset.
+
+The largest primary input regression was +3.61% on 10M sorted values; the
+pair-only view was +5.24%, with slowdown in two of three processes. NASA bytes
+was 2.42% faster than v0.1.2 in this run; the earlier D-versus-B-only loss is a
+different contrast. Small regressions and large existing competitive losses
+remain. This B+D performance comparison uses one local Intel i5-14500 Windows
+CPU; the older v0.1.2 Colab run does not validate v0.1.3 on another CPU.
+
+The frequency helper adds 24 KiB of stack array payload when required. Its
+maximum 2,048 samples keep the table at <=50% occupancy, and uint16 counts fit
+the maximum frequency. The sample-values vector still allocates; mixed-path
+temporary storage is unchanged. [Safety proof, tests and reproduction](benchmarks/v013_validation/README.md)
+document collision/wraparound coverage and implementation limits. Historical
+v0.1.2 results below keep their original inputs and measurement scope.
+
 ## v0.1.2 update
 
 The validated selective histogram candidate is now the public implementation.
@@ -180,6 +212,9 @@ implementation. See the full report before interpreting the ratios.
 - Key-only, ascending, non-stable sorting. No custom comparator, negative-key
   API, attached records, payload movement, or stable-sort guarantee.
 - Uses allocation; `std::bad_alloc` can propagate. No reuse-buffer API.
+- Required frequency analysis uses a 24 KiB stack-array payload in a separate
+  helper; small-stack callers should account for this. Collision patterns can
+  increase linear-probing work; the table is bounded by 2,048 samples.
 - A mixed bucket path needs roughly `4*n` temporary bytes plus sample and
   bucket metadata. The direct-output path avoids the `n`-element temporary.
 - Small inputs and sampled-ordered inputs outside the low-byte exception use

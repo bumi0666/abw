@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <unordered_map>
+#include <array>
 #include <vector>
 #include <boost/sort/pdqsort/pdqsort.hpp>
 #if defined(_MSC_VER)
@@ -67,6 +67,46 @@ inline probe_result probe(const array_type& a) {
     return {double(up) / m <= .1 || double(down) / m <= .1, variation};
 }
 
+// At most 2048 sampled values, so a 4096-slot table stays at <= 50% load.
+// Zero count marks an empty slot; every uint32 key, including 0/UINT32_MAX, is valid.
+struct fixed_frequency {
+    static constexpr std::size_t capacity = 4096;
+    std::array<value_type, capacity> keys; // Read only after its count is nonzero.
+    std::array<std::uint16_t, capacity> counts{};
+    std::size_t distinct = 0;
+    static value_type hash(value_type x) {
+        x ^= x >> 16; x *= 0x7feb352du;
+        x ^= x >> 15; x *= 0x846ca68bu;
+        return x ^ (x >> 16);
+    }
+    std::size_t increment(value_type value) {
+        std::size_t slot = hash(value) & (capacity - 1);
+        while (counts[slot] && keys[slot] != value) slot = (slot + 1) & (capacity - 1);
+        if (!counts[slot]) { keys[slot] = value; ++distinct; }
+        return ++counts[slot];
+    }
+};
+struct sample_summary { std::size_t distinct; std::size_t mode; };
+// Keep the 24 KiB table frame off the native/ordered fast paths.
+#if defined(_MSC_VER)
+__declspec(noinline)
+#else
+__attribute__((noinline))
+#endif
+inline sample_summary collect_sample(const array_type& a, array_type& values, std::size_t m) {
+    fixed_frequency frequency;
+    rng r(0x55ab76c1);
+    std::size_t mode = 0;
+    for (std::size_t j = 0; j < m; ++j) {
+        const auto lo = j * (a.size() - 1) / m;
+        const auto hi = (j + 1) * (a.size() - 1) / m;
+        const auto value = a[lo + r.next() % std::max<std::size_t>(1, hi - lo)];
+        values[j] = value;
+        mode = (std::max)(mode, frequency.increment(value));
+    }
+    return {frequency.distinct, mode};
+}
+
 // Validated v0.1.2 policy: exact low-byte direct-output exception.
 // Sample positions and the remaining E thresholds are retained.
 inline decision choose(const array_type& a) {
@@ -75,21 +115,24 @@ inline decision choose(const array_type& a) {
     const auto order = probe(a);
     // Keep ordered/native exits unless sampled variation is nonzero and within 8 bits.
     if (order.ordered && (order.variation == 0 || order.variation > 255u)) return d;
+    // Ordered low-byte exception: detailed sample frequency cannot affect dispatch.
+    if (order.ordered) {
+        value_type difference = 0;
+        const value_type reference = a[0];
+        for (std::size_t i = 1; i < a.size(); ++i) difference |= a[i] ^ reference;
+        if (!difference) { d.selected = strategy::skip; return d; }
+        if (bit_width(difference) <= 8) {
+            d.selected = strategy::active8; d.bits = 8; d.shift = 0;
+        }
+        return d;
+    }
+
     const auto m = std::min<std::size_t>(a.size() - 1,
                                         a.size() < 1000000 ? 512 : 2048);
     array_type values(m);
-    std::unordered_map<value_type, std::size_t> frequency;
-    rng r(0x55ab76c1);
-    std::size_t mode = 0;
-    for (std::size_t j = 0; j < m; ++j) {
-        const auto lo = j * (a.size() - 1) / m;
-        const auto hi = (j + 1) * (a.size() - 1) / m;
-        const auto value = a[lo + r.next() % std::max<std::size_t>(1, hi - lo)];
-        values[j] = value;
-        mode = (std::max)(mode, ++frequency[value]);
-    }
-    const bool duplicate = 1 - double(frequency.size()) / m >= .5 ||
-                           double(mode) / m >= .1;
+    const auto summary = collect_sample(a, values, m);
+    const bool duplicate = 1 - double(summary.distinct) / m >= .5 ||
+                           double(summary.mode) / m >= .1;
     d.bits = duplicate ? 8 : 12;
     value_type difference = 0;
     for (std::size_t i = 1; i < a.size(); ++i) difference |= a[i] ^ a[0];

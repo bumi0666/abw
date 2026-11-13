@@ -1,0 +1,58 @@
+{
+  "compiler": "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_toolchain\\llvm-mingw-20261104-ucrt-x86_64\\bin\\clang++.exe",
+  "cpp_standard": 17,
+  "builds": [
+    {
+      "command": [
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_toolchain\\llvm-mingw-20261104-ucrt-x86_64\\bin\\clang++.exe",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-static",
+        "-pthread",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\include",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_vendor\\boost_1_90_0",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\tests\\reference",
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\tests\\conformance.cpp",
+        "-o",
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\abw_v013_release\\conformance.exe"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_toolchain\\llvm-mingw-20261104-ucrt-x86_64\\bin\\clang++.exe",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-static",
+        "-pthread",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\include",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\F_vendor\\boost_1_90_0",
+        "-IC:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\tests\\reference",
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\outputs\\abw\\tests\\frequency.cpp",
+        "-o",
+        "C:\\Users\\admin\\Documents\\Codex\\2026-11-10\\new-chat\\work\\abw_v013_release\\frequency.exe"
+      ],
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "tests": [
+    {
+      "test": "frequency",
+      "stdout": "PASS frequency_cases=58 max_samples=2048 collision_chain=2048 wraparound=yes full_u32=yes\n",
+      "stderr": ""
+    },
+    {
+      "test": "conformance",
+      "stdout": "PASS cases=149 direct=59 partitioned=48\n",
+      "stderr": ""
+    }
+  ],
+  "existing_workloads": 60,
+  "public_candidate_namespace_only": true,
+  "header_sha256": "493057e2655ba1017816b952f955f0e5eeee1143d5db8dfbe333fef7eb5b231a",
+  "measured_candidate_sha256": "fa10b3c44d914b0db07b1cba7aba9c2a57580a02f99d611733a8f31b333c88e9"
+}
