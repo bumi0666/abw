@@ -1,3 +1,19 @@
+# Exact sample-certificate experiment and IPv4 clarification
+
+See benchmarks/sample_certificate_validation/README.md. The independent AVX2
+skip-only copy uses existing sample values and the consumed entropy histogram
+to prove a mixed final bucket and bypass whole-input counting. No allocation,
+new scan, sample/threshold change or public-header integration.198 processes/
+6336 timed sorts pass; mixed27 candidate overhead versus AVX2 is3.40%, old29.83%.
+All66 candidate is0.81% slower than AVX2 and9.12% faster than old skip-only.
+The full mixed ABW policy is unchanged. README separately records its earlier
+IPv4 loss of27.01% versus pdqsort and maximum47.70%, distinct from version-to-
+version7.12% regression. Original samples show destination max occupancy80.5-
+83.6%, source57.0-67.8%; no new threshold. Preserve both old and new evidence.
+No main merge, release, or additional optimization is automatic.
+
+---
+
 # Backend positioning evidence update
 
 Full ABW->pdq, AVX2 alone, pdq alone and skip-only pdq were compared in the

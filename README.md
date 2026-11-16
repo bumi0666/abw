@@ -86,9 +86,14 @@ remains2.18%/3.28% slower and reuse is close. CAFS i32/Counting
 have smaller supported subsets. Do not interpret one aggregate as universal
 superiority. Full-input times and substantial competitive losses are retained.
 
-Maximum default/v0.1.3 median regression is7.12% on1M partial; reused calls
+**Version-to-version comparison:** maximum default/v0.1.3 median regression is7.12% on1M partial; reused calls
 show6.27% on that input and5.69% on Census industry in the disturbed condition.
 Their causes remain unconfirmed; native/direct paths do not use workspace.
+**Backend comparison:** in the separate full-ABW/pdqsort66 run below, the maximum
+observed regression versus pdqsort alone is47.70% (CTU2 destination IPv4), and
+the IPv4_6 mean is27.01% slower. Version-to-version improvements are not a bound
+on overhead versus the backend. The earlier IPv4 scan omission reduced ABW's
+cost; it did not make full ABW faster than pdqsort on those six columns.
 GCC/Clang/MSVC C++17 CI passes. Linux generated repeated-call diagnostics on
 AMD/Intel hosted VMs pass correctness checks. Linux gains are small or absent
 and slowdowns occur: GCC workspace is about1.7-1.9% slower than the new default
@@ -170,8 +175,68 @@ of per-input median instrumented frontend times; sample allocation/frequency
 1.04%, width scan5.54%, probe0.11%, entropy0.54%. Instrumented frontend totals
 sum to59.1328ms versus58.3637ms uninstrumented (+1.32%); the median input-level
 time ratio is1.00387. These are27 separate frontend diagnoses, not one sort.
-The skip-only copy continues the original count pass after the first mixed
-value. No execution-order or implementation optimization is made here.
+The skip-only copy in that diagnostic continued the original count pass after
+the first mixed value. The independent experiment below tests avoiding it with
+an exact sample witness.
+
+### IPv4 regression and bucket diagnosis
+
+These are the earlier same-run **full ABW** comparisons, not the new skip-only
+candidate. Positive time changes mean slower.
+
+| IPv4 input | Full ABW vs pdqsort | Full ABW vs skip-only pdq |
+|---|---:|---:|
+| ctu1_srcaddr_ipv4 | +1.43% | -5.51% |
+| ctu1_dstaddr_ipv4 | +47.63% | +17.77% |
+| ctu2_srcaddr_ipv4 | +12.52% | +0.52% |
+| ctu2_dstaddr_ipv4 | +47.70% | +16.09% |
+| ctu3_srcaddr_ipv4 | +15.43% | -0.50% |
+| ctu3_dstaddr_ipv4 | +46.14% | +15.47% |
+
+The separate existing-sample diagnosis uses the exact selected bits/shift.
+IPv4 destinations have maximum sample bucket occupancy80.5-83.6%, sources
+57.0-67.8%; all use256 buckets/shift24 and entropy cutoff1. Across mixed27,
+full ABW is faster than skip-only on22 inputs and slower on5. Maximum-occupancy
+ranges overlap (winners0.195-67.822%, losers21.094-83.594%). No new occupancy
+threshold is introduced. [Exact sample values and per-input diagnosis](benchmarks/sample_certificate_validation/sample_bucket_diagnosis.csv).
+
+### Experimental exact sample witness for skip-only AVX2
+
+A pair of different actual sample values in the same **final** bucket proves
+that exact single-value direct output is impossible. The experimental copy
+retains the original decision, samples and bit interval. After entropy selection,
+it reuses the collected values and the no-longer-needed histogram to detect the
+pair; no extra allocation, full scan or numerical dispatch threshold. Native
+and zero-shift paths skip this additional test. Missing evidence retains the
+old whole-input count/purity check. The public header remains unchanged.
+
+[The candidate comparison](benchmarks/sample_certificate_validation/README.md)
+uses AVX2 alone, old skip-only AVX2 and sample-witness skip-only AVX2 on all66
+unchanged inputs, same binary/C++17 AVX2 conditions.198 processes/6,336 correct
+timed sorts pass full-array/hash/decision/direct-path checks. The proof fires on
+all27 mixed inputs. Pre-run safety also covers rare mixed values missed by the
+sample, independent map-based witnesses, UINT32_MAX and all66 decisions.
+
+| Group | N | Old skip-only/AVX2 | Sample-witness/AVX2 | Candidate/old skip-only |
+|---|---:|---:|---:|---:|
+| Real18 | 18 | 1.15517 | 1.09704 | 0.94695 |
+| Synthetic42 | 42 | 1.02712 | 0.97206 | 0.94469 |
+| IPv4_6 | 6 | 1.65772 | 1.00972 | 0.61260 |
+| All66 | 66 | 1.10774 | 1.00813 | 0.90881 |
+| Mixed27 | 27 | 1.29827 | 1.03396 | 0.79713 |
+| Direct18 | 18 | 0.96099 | 0.96001 | 0.99295 |
+| Native/skip21 | 21 | 1.02027 | 1.01765 | 0.99707 |
+
+Mixed-input overhead versus AVX2 falls from29.83% to3.40% in this run;
+candidate time is20.29% lower than old skip-only. IPv4_6 overhead falls from
+65.77% to0.97%. Overall candidate time is9.12% below old skip-only and0.81%
+above AVX2. Real18 remains9.70% slower than AVX2. Direct-output losses such
+as Census sex and Skin labels remain. Maximum candidate regression versus old
+skip-only is2.04% on1M upper-only. Full input tables/process ratios are retained.
+
+This exact proof reduces skip-only fallback cost. Full ABW's mixed partition
+and its IPv4 losses remain unchanged. No public implementation or release is
+changed by the experiment; no cardinality/occupancy threshold is fitted.
 
 ## v0.1.3 update
 
