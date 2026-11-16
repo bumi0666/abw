@@ -69,13 +69,27 @@ OR scan: it already proves width32. Missing witnesses retain the full scan.
 No sampling seed, dispatch threshold, histogram selection or sorting policy is
 changed. The shared partition implementation is measured in its final header.
 
-Earlier workspace-only full60 prototype results are not final combined-header
-results: warm/64MiB-disturbed repeated-call gains were 2.92%/3.68% overall and
-7.63%/8.63% on the 21 mixed inputs. Reused ABW's mean was close to per-call CAFS
-u32, while single-call ABW was about 3% behind. These compare different memory
-lifetimes; they are not an equal-workspace comparison. The final66 comparison
-also includes six CTU IPv4 columns and reports default, fresh-workspace and
-reused-workspace calls separately. No release is published by this preparation.
+The [integrated-header validation](benchmarks/v020_validation/README.md) includes
+all existing60 plus six CTU IPv4 columns,42,816 correct timed sorts/396 processes.
+Reused calls reduce all66 time5.05%/5.15% versus v0.1.3 (warm/64MiB-disturbed)
+and3.46%/3.98% versus the new default. Mixed27 reuse/default gains7.73%/8.71%.
+Default-call gains versus v0.1.3 are0.99%/1.18% overall. No runtime sorting
+policy changes are made. The exact scan certificate fires on18 synthetics and
+six IPv4 inputs, not the older18 real columns.
+
+Reused ABW is2.59%/2.79% faster than per-call CAFS u32 on all66; default is
+0.46%/1.46% slower. On the familiar60, default remains2.18%/3.28% slower and
+reuse is close. These compare different storage lifetimes. CAFS i32/Counting
+have smaller supported subsets. Do not interpret one aggregate as universal
+superiority. Full-input times and substantial competitive losses are retained.
+
+Maximum default/v0.1.3 median regression is7.12% on1M partial; reused calls
+show6.27% on that input and5.69% on Census industry in the disturbed condition.
+Their causes remain unconfirmed; native/direct paths do not use workspace.
+GCC/Clang/MSVC C++17 CI passes. Linux generated repeated-call diagnostics on
+AMD/Intel hosted VMs pass; all66 performance on another CPU remains unverified.
+[Assessment and raw evidence](benchmarks/v020_validation/assessment.md) retain
+these limitations. Main and published release are not changed by this draft PR.
 
 ## v0.1.3 update
 

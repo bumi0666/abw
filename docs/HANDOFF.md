@@ -7,8 +7,9 @@ core. No new guard, dispatch threshold or histogram change. No release yet.
 
 See docs/workspace.md for ownership/lifetime/growth/exception/concurrency rules.
 Tests and CI include C++17 GCC/Clang/MSVC and Linux repeated-call diagnostics.
-Final integrated-header performance uses existing60 plus six CTU IPv4 columns;
-keep its results separate from historical prototype data. Default/fresh/reuse
+Final integrated-header performance is complete:42,816 correct timed sorts in396
+processes, using existing60 plus six CTU IPv4 columns;
+see benchmarks/v020_validation/README.md; keep results separate from historical prototype data. Default/fresh/reuse
 lifetimes must remain separate. Do not automatically add optimizations, merge
 or publish a release. Earlier raw data remain unchanged.
 
