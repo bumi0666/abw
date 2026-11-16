@@ -1,3 +1,15 @@
+# Backend positioning evidence update
+
+Full ABW->pdq, AVX2 alone, pdq alone and skip-only pdq were compared in the
+same binary on unchanged66 inputs;9,504 correct timed sorts/198 processes.
+See benchmarks/full_backend_validation/README.md for all inputs, normal and
+instrumented frontend diagnosis, and limitations. Public backend stays pdqsort;
+no code/policy/workspace changes. Preserve the earlier skip-only evidence at
+benchmarks/backend_skip_validation/README.md. README now lists all18 real
+columns against AVX2. No main merge or release is part of this update.
+
+---
+
 # v0.2.0 candidate handoff
 
 Prepared 2026-11-16 from released v0.1.3 commit
