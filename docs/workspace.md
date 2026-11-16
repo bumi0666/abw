@@ -50,12 +50,14 @@ for samples/counts/starts/cursors remain; this is only temporary-array reuse.
 
 ## Exceptions and concurrency
 
-For these uint32 elements, a failed vector allocation during workspace growth
-preserves the old workspace storage. Allocations in choose/counting/workspace
-growth occur before writes to the caller's input; allocation failure there
-leaves that input unchanged. Local tests inject a bad_alloc at large growth,
-verify input and old capacity, then successfully reuse the same workspace.
-This does not replace a general library/platform exception-safety review.
+**Allocation-failure guarantee:** for the supported `std::vector<uint32_t>`
+API, an internal allocation failure (`std::bad_alloc`) leaves the input array
+unchanged: a strong exception guarantee for the input on allocation failure.
+Analysis and count/start/cursor/temporary allocations precede input writes;
+mixed-path sorting uses temporary storage and only then copies back.
+Failed workspace vector growth also preserves the old workspace storage.
+Tests inject a bad_alloc at large growth, verify the unchanged input and old
+capacity, then successfully reuse the same workspace.
 
 One workspace must not participate in overlapping sort/release/move operations.
 Use one workspace per concurrent sorting context, or externally serialize access.
@@ -81,3 +83,12 @@ concurrent workspaces, exact certificates and adverse sample collisions. Linux
 CI records repeated-call diagnostics without performance pass/fail thresholds.
 The final integrated-header comparison is recorded separately from earlier
 workspace-only prototype measurements.
+
+## Performance scope
+
+The 66-input performance comparison was measured on Windows11/i5-14500.
+Workspace is an explicit storage-lifetime option, not a speed guarantee.
+Linux hosted-VM repeated-call diagnostics show small gains, no gain, and
+slowdowns depending on the input/environment. See the root README and
+benchmarks/v020_validation/report.md for values and per-call versus retained
+storage comparisons.

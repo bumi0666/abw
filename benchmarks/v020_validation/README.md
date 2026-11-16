@@ -14,6 +14,8 @@ unchanged from v0.1.3. This is an unreleased candidate.
 choices, active intervals, direct paths and source/input hashes pass. Three
 processes/input/condition, warm and64MiB-disturbed, same prior ABBA design.
 Default/fresh-workspace/reused-workspace calls remain separate. No timing gate.
+**All66 performance figures are Windows11/i5-14500 measurements, not
+cross-platform performance claims.**
 
 Reused workspace reduces all66 time by5.05%/5.15% versus v0.1.3 and3.46%/3.98%
 versus the new default. Mixed27 reuse/default reduction7.73%/8.71%. New default
@@ -27,10 +29,18 @@ and Census industry +5.69% disturbed. All three reuse Census processes are
 slower. These native/direct paths do not use workspace; cause unconfirmed.
 
 GCC/Clang/MSVC C++17 [CI](https://github.com/bumi0666/abw/actions/runs/43804878261)
-passes. Linux repeated diagnostics on AMD/Intel hosted VMs pass, with some
-small/no timing gain. They do not reproduce all66 performance on another CPU.
+passes. Linux repeated diagnostics on AMD/Intel hosted VMs pass correctness.
+Workspace versus v0.1.3 changes by -0.59%/+1.09% on GCC and -2.70%/-1.92% on
+Clang for the two mixed inputs. Versus the new default, GCC workspace is
+1.74%/1.88% slower. Linux gains can be small or absent and slowdowns occur;
+these eight-repeat VM values do not reproduce all66 performance on another CPU.
+See [exact artifact values](report.md#linux-repeated-call-values).
 The archive contains raw sessions, source/input manifests, frozen headers,
 competitor source/licenses, analysis, API contract and Linux logs. Dataset
 binaries, Boost and compiler are not bundled. See REPRODUCE.md inside it.
 
 Archive SHA256: `a33c70c2a44b64084902abaacac6fc690f97da718a0a0465c722d18d61b5668b`.
+
+The reproduction archive remains the frozen original evidence snapshot. Current
+repository documents clarify platform scope and the allocation-failure contract;
+raw timings, sources and the archive were not changed.

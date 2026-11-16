@@ -6,6 +6,10 @@ exact bit31 width-certificate scan omission. Both overloads share one partition
 core. No new guard, dispatch threshold or histogram change. No release yet.
 
 See docs/workspace.md for ownership/lifetime/growth/exception/concurrency rules.
+The documented allocation-failure guarantee preserves the input array. All66
+performance results are Windows11/i5-14500 only. Linux diagnostics show small
+gains, no gain and slowdowns; do not generalize Windows speedups to Linux.
+Present per-call default/CAFS comparison before retained-workspace/CAFS results.
 Tests and CI include C++17 GCC/Clang/MSVC and Linux repeated-call diagnostics.
 Final integrated-header performance is complete:42,816 correct timed sorts in396
 processes, using existing60 plus six CTU IPv4 columns;

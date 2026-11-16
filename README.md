@@ -71,15 +71,18 @@ changed. The shared partition implementation is measured in its final header.
 
 The [integrated-header validation](benchmarks/v020_validation/README.md) includes
 all existing60 plus six CTU IPv4 columns,42,816 correct timed sorts/396 processes.
+**All 66-input performance figures below were measured on Windows11, Intel
+i5-14500; they are not cross-platform performance results.**
 Reused calls reduce all66 time5.05%/5.15% versus v0.1.3 (warm/64MiB-disturbed)
 and3.46%/3.98% versus the new default. Mixed27 reuse/default gains7.73%/8.71%.
 Default-call gains versus v0.1.3 are0.99%/1.18% overall. No runtime sorting
 policy changes are made. The exact scan certificate fires on18 synthetics and
 six IPv4 inputs, not the older18 real columns.
 
-Reused ABW is2.59%/2.79% faster than per-call CAFS u32 on all66; default is
-0.46%/1.46% slower. On the familiar60, default remains2.18%/3.28% slower and
-reuse is close. These compare different storage lifetimes. CAFS i32/Counting
+The new default call is0.46%/1.46% slower than CAFS u32 on all66 under per-call
+storage lifetimes. When ABW retains its workspace between calls while CAFS still
+allocates per call, reused ABW is2.59%/2.79% faster. On the familiar60, default
+remains2.18%/3.28% slower and reuse is close. CAFS i32/Counting
 have smaller supported subsets. Do not interpret one aggregate as universal
 superiority. Full-input times and substantial competitive losses are retained.
 
@@ -87,7 +90,11 @@ Maximum default/v0.1.3 median regression is7.12% on1M partial; reused calls
 show6.27% on that input and5.69% on Census industry in the disturbed condition.
 Their causes remain unconfirmed; native/direct paths do not use workspace.
 GCC/Clang/MSVC C++17 CI passes. Linux generated repeated-call diagnostics on
-AMD/Intel hosted VMs pass; all66 performance on another CPU remains unverified.
+AMD/Intel hosted VMs pass correctness checks. Linux gains are small or absent
+and slowdowns occur: GCC workspace is about1.7-1.9% slower than the new default
+on both tested mixed inputs. Clang shows small gains. Eight-repeat VM timings
+do not establish a platform-wide conclusion. See the [Linux artifact values](benchmarks/v020_validation/report.md#linux-repeated-call-values).
+All66 performance on another CPU remains unverified.
 [Assessment and raw evidence](benchmarks/v020_validation/assessment.md) retain
 these limitations. Main and published release are not changed by this draft PR.
 
@@ -193,7 +200,8 @@ all changed; the two runs are not pooled. No new policy or optimization is adopt
 1. Apply the small-input and sampled-order checks, retaining the exact low-byte
    direct-output exception described above.
 2. Sample the input for the existing distribution/duplicate policy.
-3. Determine a contiguous bucket bit range using an exact variation scan.
+3. Determine a contiguous bucket bit range using exact variation analysis.
+   An already observed bit31 difference proves width32 without a full scan.
 4. If splitting is selected with `shift == 0`, count and reconstruct values
    directly: the common prefix proves every bucket contains a single value.
    Otherwise count buckets and compare each bucket's values.
@@ -255,7 +263,9 @@ implementation. See the full report before interpreting the ratios.
 
 - Key-only, ascending, non-stable sorting. No custom comparator, negative-key
   API, attached records, payload movement, or stable-sort guarantee.
-- Uses allocation; `std::bad_alloc` can propagate. No reuse-buffer API.
+- Uses allocation; `std::bad_alloc` can propagate. Internal allocation failure
+  preserves the input array. Optional caller-owned workspace retains mixed-path
+  temporary storage until release or destruction.
 - Required frequency analysis uses a 24 KiB stack-array payload in a separate
   helper; small-stack callers should account for this. Collision patterns can
   increase linear-probing work; the table is bounded by 2,048 samples.

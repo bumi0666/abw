@@ -88,6 +88,9 @@ cause of a regression and is not used to discard measurements.
 
 ## Results
 
+**All following66-input performance results are Windows11/i5-14500 results.
+Linux performance has not been replicated over these66 inputs.**
+
 All 42,816 timed sorts in396 processes passed.
 
 ### warm: geometric mean speedup over pdq
@@ -362,3 +365,22 @@ Full scan omitted on24/66 inputs:18 synthetic plus all six CTU IPv4 columns. Old
 | 2 | perturbed | 0.98802 | 0.98920 | 0.99808 |
 
 All288 control sorts pass. Separate binary, exact same baseline function pointer; not a causal explanation for another input or the main competition.
+
+## Linux repeated-call values
+
+Linux repeated-call timings do not establish the Windows-sized benefit.
+For the two generated 1M mixed inputs (eight repetitions), the CI artifacts give:
+
+| Hosted environment | Input | v0.1.3 ms | New default ms | Workspace ms | Workspace/v0.1.3 time change | Workspace/default time change |
+|---|---|---:|---:|---:|---:|---:|
+| GCC 13.3 / AMD EPYC 7763 | Full-range uint32 | 20.028 | 19.567 | 19.908 | -0.59% | +1.74% |
+| GCC 13.3 / AMD EPYC 7763 | 20-bit uint32 | 19.499 | 19.349 | 19.713 | +1.09% | +1.88% |
+| Clang 18.1 / Intel Xeon 6975P-C | Full-range uint32 | 18.094 | 17.956 | 17.605 | -2.70% | -1.95% |
+| Clang 18.1 / Intel Xeon 6975P-C | 20-bit uint32 | 17.942 | 17.797 | 17.597 | -1.92% | -1.13% |
+
+Positive time changes mean slower. GCC workspace is slower than the new default
+on both inputs; Clang has small gains. These short shared-VM diagnostics use
+different compilers and CPUs and cannot rank platforms or establish statistical
+performance conclusions. Linux may show smaller gains, no gain, or a slowdown.
+Allocator behavior is an unverified explanation, not a measured cause. The 66-input
+Windows performance results must not be generalized to other platforms.

@@ -6,7 +6,7 @@ move and independent-workspace concurrency pass. No algorithm/policy changes
 were made during comparison. No further long-running test or optimization is
 proposed by this report. Main and the public release remain v0.1.3.
 
-## Measured effect (warm / 64MiB-disturbed)
+## Measured effect on Windows11/i5-14500 (warm / 64MiB-disturbed)
 
 - All66 reused-workspace time versus v0.1.3: -5.05% / -5.15%.
 - All66 default-call time versus v0.1.3: -0.99% / -1.18%.
@@ -16,8 +16,9 @@ proposed by this report. Main and the public release remain v0.1.3.
 - Existing60 reuse versus v0.1.3: -4.31% / -4.53%; keep separate from IPv4.
 - IPv4_6 reuse versus v0.1.3: -12.13% / -11.07%; versus new default -9.92% /
   -10.23%. Default versus v0.1.3: -1.83% / -1.45%.
-- All66 reuse versus per-call CAFS u32: -2.59% / -2.79%; new default versus CAFS:
-  +0.46% / +1.46%. These are separate lifetime/estimator contrasts, not a claim
+- All66 new default versus per-call CAFS u32: +0.46% / +1.46%. With ABW
+  workspace retained between calls while CAFS allocates per call, reuse versus
+  CAFS is -2.59% / -2.79%. These are separate lifetime/estimator contrasts, not a claim
   that ABW universally beats CAFS or that all ratios multiply exactly.
 - Existing60 default versus CAFS u32 remains +2.18% / +3.28%; reused workspace
   is close (-0.29% / -0.43%). Include both when describing the familiar60.
@@ -66,3 +67,22 @@ The candidate is ready for code/release review with these limitations recorded.
 A main merge/tag/Experimental Release requires the user's release decision;
 none is performed automatically. Preserve this implementation rather than
 adding guards or tuning around the remaining regressions.
+
+## Linux timing clarification
+
+Linux repeated-call timings do not establish the Windows-sized benefit.
+For the two generated 1M mixed inputs (eight repetitions), the CI artifacts give:
+
+| Hosted environment | Input | v0.1.3 ms | New default ms | Workspace ms | Workspace/v0.1.3 time change | Workspace/default time change |
+|---|---|---:|---:|---:|---:|---:|
+| GCC 13.3 / AMD EPYC 7763 | Full-range uint32 | 20.028 | 19.567 | 19.908 | -0.59% | +1.74% |
+| GCC 13.3 / AMD EPYC 7763 | 20-bit uint32 | 19.499 | 19.349 | 19.713 | +1.09% | +1.88% |
+| Clang 18.1 / Intel Xeon 6975P-C | Full-range uint32 | 18.094 | 17.956 | 17.605 | -2.70% | -1.95% |
+| Clang 18.1 / Intel Xeon 6975P-C | 20-bit uint32 | 17.942 | 17.797 | 17.597 | -1.92% | -1.13% |
+
+Positive time changes mean slower. GCC workspace is slower than the new default
+on both inputs; Clang has small gains. These short shared-VM diagnostics use
+different compilers and CPUs and cannot rank platforms or establish statistical
+performance conclusions. Linux may show smaller gains, no gain, or a slowdown.
+Allocator behavior is an unverified explanation, not a measured cause. The 66-input
+Windows performance results must not be generalized to other platforms.
