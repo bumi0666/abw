@@ -47,6 +47,36 @@ follow-up results are included; this is not a statistical equivalence proof.
 Tests compare decisions, selected bit ranges, direct-output decisions and full
 sorted results against the frozen implementation.
 
+## v0.2.0 candidate (unreleased)
+
+This branch adds caller-owned temporary storage for repeated mixed-path sorts:
+
+```cpp
+abw::workspace ws;
+for (auto& values : batches) abw::sort(values, ws);
+auto bytes = ws.retained_bytes();  // capacity payload, not RSS
+ws.release();                     // return retained storage
+```
+
+The existing `abw::sort(values)` retains its per-call temporary lifetime.
+Native/skip/direct paths do not use workspace storage. Mixed calls retain at
+least `4*n` bytes of capacity after growth; later smaller calls can keep more.
+Use a separate workspace per concurrent sorting context. See the complete
+[API, memory, growth and exception contract](docs/workspace.md).
+
+An exact bit31 difference witnessed in the existing probe also skips the full
+OR scan: it already proves width32. Missing witnesses retain the full scan.
+No sampling seed, dispatch threshold, histogram selection or sorting policy is
+changed. The shared partition implementation is measured in its final header.
+
+Earlier workspace-only full60 prototype results are not final combined-header
+results: warm/64MiB-disturbed repeated-call gains were 2.92%/3.68% overall and
+7.63%/8.63% on the 21 mixed inputs. Reused ABW's mean was close to per-call CAFS
+u32, while single-call ABW was about 3% behind. These compare different memory
+lifetimes; they are not an equal-workspace comparison. The final66 comparison
+also includes six CTU IPv4 columns and reports default, fresh-workspace and
+reused-workspace calls separately. No release is published by this preparation.
+
 ## v0.1.3 update
 
 v0.1.3 preserves the v0.1.2 sorting policy while reducing preprocessing work.

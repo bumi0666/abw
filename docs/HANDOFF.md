@@ -1,3 +1,19 @@
+# v0.2.0 candidate handoff
+
+Prepared 2026-11-16 from released v0.1.3 commit
+3797feafb7bd3e2b230e815fd1aa69df16cf0141. Add only caller-owned workspace and
+exact bit31 width-certificate scan omission. Both overloads share one partition
+core. No new guard, dispatch threshold or histogram change. No release yet.
+
+See docs/workspace.md for ownership/lifetime/growth/exception/concurrency rules.
+Tests and CI include C++17 GCC/Clang/MSVC and Linux repeated-call diagnostics.
+Final integrated-header performance uses existing60 plus six CTU IPv4 columns;
+keep its results separate from historical prototype data. Default/fresh/reuse
+lifetimes must remain separate. Do not automatically add optimizations, merge
+or publish a release. Earlier raw data remain unchanged.
+
+---
+
 # ABW v0.1.3 handoff
 
 Updated 2026-11-13. v0.1.3 adopts only validated B+D: remove unused detailed

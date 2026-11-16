@@ -37,3 +37,20 @@ jobs:
         run: cmake --build build --config Release --parallel 2
       - name: Correctness and frozen-policy conformance
         run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Record Linux repeated-call diagnostics (no timing gate)
+        if: runner.os == 'Linux'
+        run: |
+          ./build/abw_repeated > linux-repeated.jsonl
+          cat linux-repeated.jsonl
+          uname -a > linux-environment.txt
+          lscpu >> linux-environment.txt
+          ${{ matrix.cxx }} --version >> linux-environment.txt
+      - name: Save Linux diagnostic records
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-repeated-${{ matrix.compiler }}
+          path: |
+            linux-repeated.jsonl
+            linux-environment.txt
