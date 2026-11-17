@@ -1,8 +1,8 @@
-# v0.2.0 candidate validation
+# v0.2.0 validation
 
 This evidence measures the integrated public header: caller-owned workspace,
 exact sampled bit31 certificate, one shared partition core. Sorting policy is
-unchanged from v0.1.3. This is an unreleased candidate.
+unchanged from v0.1.3. The release header matches this measured snapshot.
 
 - [Full report and all input times](report.md)
 - [Assessment, gains, regressions and limits](assessment.md)
@@ -30,10 +30,12 @@ slower. These native/direct paths do not use workspace; cause unconfirmed.
 
 GCC/Clang/MSVC C++17 [CI](https://github.com/bumi0666/abw/actions/runs/43804878261)
 passes. Linux repeated diagnostics on AMD/Intel hosted VMs pass correctness.
-Workspace versus v0.1.3 changes by -0.59%/+1.09% on GCC and -2.70%/-1.92% on
-Clang for the two mixed inputs. Versus the new default, GCC workspace is
-1.74%/1.88% slower. Linux gains can be small or absent and slowdowns occur;
-these eight-repeat VM values do not reproduce all66 performance on another CPU.
+The earlier run showed GCC workspace/default slowdowns of1.74%/1.88% and
+small Clang gains. The latest checked run43823113657 instead shows workspace
+slower than the new default by19.58%/6.39% on GCC and2.11%/3.14% on Clang.
+Both artifact sets are retained separately. Linux gains can be small or absent
+and slowdowns occur; these eight-repeat VM values do not reproduce all66
+performance on another CPU.
 See [exact artifact values](report.md#linux-repeated-call-values).
 The archive contains raw sessions, source/input manifests, frozen headers,
 competitor source/licenses, analysis, API contract and Linux logs. Dataset

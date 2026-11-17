@@ -384,3 +384,30 @@ different compilers and CPUs and cannot rank platforms or establish statistical
 performance conclusions. Linux may show smaller gains, no gain, or a slowdown.
 Allocator behavior is an unverified explanation, not a measured cause. The 66-input
 Windows performance results must not be generalized to other platforms.
+
+
+### Latest pre-release CI run: 43823113657
+
+The earlier artifact table above is retained unchanged. The final documentation
+check also opened and SHA256-verified both artifacts from
+[run 43823113657](https://github.com/bumi0666/abw/actions/runs/43823113657),
+which tests PR head `6b56ac2de84a8deb7c69cc77d83250812da53b00`.
+Each input has 1,000,000 keys and eight repeated calls.
+
+| Hosted environment | Input | v0.1.3 ms | New default ms | Workspace ms | Workspace/v0.1.3 change | Workspace/default change |
+|---|---|---:|---:|---:|---:|---:|
+| GCC 13.3 / AMD EPYC 9V45 | Full-range uint32 | 16.24276 | 17.59418 | 21.03992 | +29.53% | +19.58% |
+| GCC 13.3 / AMD EPYC 9V45 | 20-bit uint32 | 15.28385 | 15.18946 | 16.15936 | +5.73% | +6.39% |
+| Clang 18.1 / AMD EPYC 9V74 | Full-range uint32 | 16.22827 | 16.13762 | 16.47890 | +1.54% | +2.11% |
+| Clang 18.1 / AMD EPYC 9V74 | 20-bit uint32 | 16.01768 | 15.78520 | 16.28157 | +1.65% | +3.14% |
+
+Workspace is slower than the new default on both mixed inputs with both
+compilers in this run. Both artifacts pass correctness and release-storage
+checks. These are short shared-VM diagnostics; earlier and latest runs are
+reported separately, without pooling them or attributing the change to an
+unmeasured cause. The Windows all66 gains are not a Linux speedup claim.
+
+Artifacts: [GCC](https://github.com/bumi0666/abw/actions/runs/43823113657/artifacts/14205571309),
+[Clang](https://github.com/bumi0666/abw/actions/runs/43823113657/artifacts/14205491595).
+ZIP SHA256: GCC `72d6cee4a5a6b41f9f54df47afeb21f51d24c8e9b0aed6f8ce0ec8569920bb74`;
+Clang `5a7eb59828067aeff05126005e9f8e02b23332366067105b2829dbb8ad808a45`.

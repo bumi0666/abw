@@ -47,9 +47,9 @@ follow-up results are included; this is not a statistical equivalence proof.
 Tests compare decisions, selected bit ranges, direct-output decisions and full
 sorted results against the frozen implementation.
 
-## v0.2.0 candidate (unreleased)
+## v0.2.0 update
 
-This branch adds caller-owned temporary storage for repeated mixed-path sorts:
+v0.2.0 adds caller-owned temporary storage for repeated mixed-path sorts:
 
 ```cpp
 abw::workspace ws;
@@ -95,13 +95,15 @@ the IPv4_6 mean is27.01% slower. Version-to-version improvements are not a bound
 on overhead versus the backend. The earlier IPv4 scan omission reduced ABW's
 cost; it did not make full ABW faster than pdqsort on those six columns.
 GCC/Clang/MSVC C++17 CI passes. Linux generated repeated-call diagnostics on
-AMD/Intel hosted VMs pass correctness checks. Linux gains are small or absent
-and slowdowns occur: GCC workspace is about1.7-1.9% slower than the new default
-on both tested mixed inputs. Clang shows small gains. Eight-repeat VM timings
-do not establish a platform-wide conclusion. See the [Linux artifact values](benchmarks/v020_validation/report.md#linux-repeated-call-values).
+AMD/Intel hosted VMs pass correctness checks. Linux gains are small or absent and slowdowns occur. In the latest checked
+run, workspace is19.58%/6.39% slower than the new default on GCC and
+2.11%/3.14% slower on Clang for two generated mixed inputs. The earlier run
+showed smaller GCC slowdowns and small Clang gains; both records are retained.
+Eight-repeat shared-VM timings do not establish a platform-wide conclusion. See the [Linux artifact values](benchmarks/v020_validation/report.md#linux-repeated-call-values).
 All66 performance on another CPU remains unverified.
 [Assessment and raw evidence](benchmarks/v020_validation/assessment.md) retain
-these limitations. Main and published release are not changed by this draft PR.
+these limitations. The optional workspace API should be evaluated on the caller's
+own platform and workload.
 
 ## Backend positioning: full ABW versus AVX2
 

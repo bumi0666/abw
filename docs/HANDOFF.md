@@ -1,3 +1,17 @@
+# v0.2.0 release handoff — 2026-11-17
+
+Release scope is caller-owned workspace and the exact sampled bit31 certificate.
+The public header remains identical to the measured snapshot (SHA256
+90a91360904e3b14fc7189c22542dc055d913e9ff69527b302b07db341296e62).
+Latest checked CI43823113657 passes GCC/Clang/MSVC. Its Linux workspace/default
+changes are +19.58%/+6.39% for GCC and +2.11%/+3.14% for Clang; README and
+validation report retain these alongside earlier diagnostics. All66 gains
+remain Windows11/i5-14500 measurements. Existing IPv4/backend losses remain
+explicitly scoped. No AVX2 mode gate or one-level largest-bucket experiment is
+included. Preserve previous raw evidence and the historical handoff entries below.
+
+---
+
 # Exact sample-certificate experiment and IPv4 clarification
 
 See benchmarks/sample_certificate_validation/README.md. The independent AVX2
