@@ -1,0 +1,66 @@
+{
+  "status": "complete",
+  "processes": 198,
+  "timed_sorts": 9504,
+  "full_output_checks_pass": true,
+  "source_input_hash_checks_pass": true,
+  "route_consistency_pass": true,
+  "public_code_changed": false,
+  "github_changed": false,
+  "groups": {
+    "development_real": {
+      "n": 9,
+      "ABW_skip_pdq": 0.5726539178189327,
+      "ABW_skip_spread": 0.41526096043436267,
+      "ABW_skip_avx2": 0.9931691459839472
+    },
+    "new_real": {
+      "n": 9,
+      "ABW_skip_pdq": 0.7155618520562341,
+      "ABW_skip_spread": 0.4642255972896331,
+      "ABW_skip_avx2": 1.3206293081760647
+    },
+    "synthetic": {
+      "n": 42,
+      "ABW_skip_pdq": 0.7320926994483467,
+      "ABW_skip_spread": 0.6592252986394909,
+      "ABW_skip_avx2": 1.0213118266981807
+    },
+    "ctu_ipv4": {
+      "n": 6,
+      "ABW_skip_pdq": 1.1951871326853678,
+      "ABW_skip_spread": 1.0869938477288765,
+      "ABW_skip_avx2": 1.699758162161072
+    },
+    "all66": {
+      "n": 66,
+      "ABW_skip_pdq": 0.737936291778137,
+      "ABW_skip_spread": 0.6175042456271389,
+      "ABW_skip_avx2": 1.1036631323650874
+    },
+    "direct": {
+      "n": 18,
+      "ABW_skip_pdq": 0.28993637646527354,
+      "ABW_skip_spread": 0.1551784934478625,
+      "ABW_skip_avx2": 0.9506527314188988
+    },
+    "mixed_fallback": {
+      "n": 27,
+      "ABW_skip_pdq": 1.0798104671642375,
+      "ABW_skip_spread": 1.0559887752332886,
+      "ABW_skip_avx2": 1.3009077760509375
+    },
+    "native_skip": {
+      "n": 21,
+      "ABW_skip_pdq": 1.007419042678962,
+      "ABW_skip_spread": 1.0119641695501214,
+      "ABW_skip_avx2": 1.0152642934612324
+    },
+    "real18": {
+      "n": 18,
+      "ABW_skip_pdq": 0.6401322504153137,
+      "ABW_skip_spread": 0.439061234213075,
+      "ABW_skip_avx2": 1.14525468004396
+    }
+  }
+}

@@ -14,6 +14,32 @@
 #endif
 
 namespace abw {
+namespace detail { struct workspace_access; }
+
+// Caller-owned temporary storage. Do not use one workspace concurrently.
+class workspace {
+    std::vector<std::uint32_t> buffer_;
+    friend struct detail::workspace_access;
+public:
+    workspace() = default;
+    workspace(const workspace&) = delete;
+    workspace& operator=(const workspace&) = delete;
+    workspace(workspace&&) noexcept = default;
+    workspace& operator=(workspace&&) noexcept = default;
+    std::size_t capacity() const noexcept { return buffer_.capacity(); }
+    std::size_t retained_bytes() const noexcept { return capacity() * sizeof(std::uint32_t); }
+    void release() noexcept { std::vector<std::uint32_t>().swap(buffer_); }
+};
+
+namespace detail {
+struct workspace_access {
+    static std::vector<std::uint32_t>& prepare(workspace& ws, std::size_t n) {
+        ws.buffer_.resize(n);
+        return ws.buffer_;
+    }
+};
+}
+
 namespace detail {
 using value_type = std::uint32_t;
 using array_type = std::vector<value_type>;
@@ -134,8 +160,12 @@ inline decision choose(const array_type& a) {
     const bool duplicate = 1 - double(summary.distinct) / m >= .5 ||
                            double(summary.mode) / m >= .1;
     d.bits = duplicate ? 8 : 12;
-    value_type difference = 0;
-    for (std::size_t i = 1; i < a.size(); ++i) difference |= a[i] ^ a[0];
+    // An actual sampled bit-31 difference proves the full uint32 width is 32.
+    // Only zero/nonzero and bit_width are used below; lower OR bits are unused.
+    value_type difference = order.variation & 0x80000000u;
+    if (!difference) {
+        for (std::size_t i = 1; i < a.size(); ++i) difference |= a[i] ^ a[0];
+    }
     if (!difference) {
         d.selected = strategy::skip;
         return d;
@@ -166,8 +196,29 @@ inline decision choose(const array_type& a) {
     return d;
 }
 
+// Storage selection is compile-time; no workspace branch in element loops.
+struct owned_buffer {
+    array_type values;
+    explicit owned_buffer(std::size_t n) : values(n) {}
+    array_type& get() noexcept { return values; }
+};
+struct borrowed_buffer {
+    array_type& values;
+    array_type& get() noexcept { return values; }
+};
+struct make_owned_buffer {
+    owned_buffer operator()(std::size_t n) const { return owned_buffer(n); }
+};
+struct make_workspace_buffer {
+    workspace& ws;
+    borrowed_buffer operator()(std::size_t n) const {
+        return {workspace_access::prepare(ws, n)};
+    }
+};
+
 // Exact B execution path. Representative zero initialization is retained.
-inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
+template<class MakeBuffer>
+inline bool partition_and_sort_impl(array_type& a, unsigned bits, unsigned shift, MakeBuffer make_buffer) {
     // choose() has proved that all bits above mask are common.
     if (shift == 0) {
         const std::size_t B = std::size_t(1) << bits;
@@ -229,7 +280,8 @@ inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
     for (std::size_t b = 0; b < bucket_count; ++b)
         starts[b + 1] = starts[b] + counts[b];
     auto cursor = starts;
-    array_type temporary(a.size());
+    auto owner = make_buffer(a.size());
+    auto& temporary = owner.get();
     for (const auto value : a) {
         const auto b = (value >> shift) & mask;
         temporary[cursor[b]++] = value;
@@ -242,6 +294,13 @@ inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
     std::copy(temporary.begin(), temporary.end(), a.begin());
     return false;
 }
+inline bool partition_and_sort(array_type& a, unsigned bits, unsigned shift) {
+    return partition_and_sort_impl(a, bits, shift, make_owned_buffer{});
+}
+inline bool partition_and_sort_workspace(array_type& a, unsigned bits, unsigned shift, workspace& ws) {
+    return partition_and_sort_impl(a, bits, shift, make_workspace_buffer{ws});
+}
+
 } // namespace detail
 
 // Sort uint32_t keys in nondecreasing order. Allocations may throw.
@@ -252,5 +311,14 @@ inline void sort(std::vector<std::uint32_t>& values) {
         boost::sort::pdqsort(values.begin(), values.end());
     else if (d.selected != detail::strategy::skip)
         detail::partition_and_sort(values, d.bits, d.shift);
+}
+
+// Repeated calls may retain caller-owned mixed-path temporary storage.
+inline void sort(std::vector<std::uint32_t>& values, workspace& ws) {
+    const auto d = detail::choose(values);
+    if (d.selected == detail::strategy::native)
+        boost::sort::pdqsort(values.begin(), values.end());
+    else if (d.selected != detail::strategy::skip)
+        detail::partition_and_sort_workspace(values, d.bits, d.shift, ws);
 }
 } // namespace abw

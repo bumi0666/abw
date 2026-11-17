@@ -1,3 +1,66 @@
+# v0.2.0 release handoff — 2026-11-17
+
+Release scope is caller-owned workspace and the exact sampled bit31 certificate.
+The public header remains identical to the measured snapshot (SHA256
+90a91360904e3b14fc7189c22542dc055d913e9ff69527b302b07db341296e62).
+Latest checked CI43823113657 passes GCC/Clang/MSVC. Its Linux workspace/default
+changes are +19.58%/+6.39% for GCC and +2.11%/+3.14% for Clang; README and
+validation report retain these alongside earlier diagnostics. All66 gains
+remain Windows11/i5-14500 measurements. Existing IPv4/backend losses remain
+explicitly scoped. No AVX2 mode gate or one-level largest-bucket experiment is
+included. Preserve previous raw evidence and the historical handoff entries below.
+
+---
+
+# Exact sample-certificate experiment and IPv4 clarification
+
+See benchmarks/sample_certificate_validation/README.md. The independent AVX2
+skip-only copy uses existing sample values and the consumed entropy histogram
+to prove a mixed final bucket and bypass whole-input counting. No allocation,
+new scan, sample/threshold change or public-header integration.198 processes/
+6336 timed sorts pass; mixed27 candidate overhead versus AVX2 is3.40%, old29.83%.
+All66 candidate is0.81% slower than AVX2 and9.12% faster than old skip-only.
+The full mixed ABW policy is unchanged. README separately records its earlier
+IPv4 loss of27.01% versus pdqsort and maximum47.70%, distinct from version-to-
+version7.12% regression. Original samples show destination max occupancy80.5-
+83.6%, source57.0-67.8%; no new threshold. Preserve both old and new evidence.
+No main merge, release, or additional optimization is automatic.
+
+---
+
+# Backend positioning evidence update
+
+Full ABW->pdq, AVX2 alone, pdq alone and skip-only pdq were compared in the
+same binary on unchanged66 inputs;9,504 correct timed sorts/198 processes.
+See benchmarks/full_backend_validation/README.md for all inputs, normal and
+instrumented frontend diagnosis, and limitations. Public backend stays pdqsort;
+no code/policy/workspace changes. Preserve the earlier skip-only evidence at
+benchmarks/backend_skip_validation/README.md. README now lists all18 real
+columns against AVX2. No main merge or release is part of this update.
+
+---
+
+# v0.2.0 candidate handoff
+
+Prepared 2026-11-16 from released v0.1.3 commit
+3797feafb7bd3e2b230e815fd1aa69df16cf0141. Add only caller-owned workspace and
+exact bit31 width-certificate scan omission. Both overloads share one partition
+core. No new guard, dispatch threshold or histogram change. No release yet.
+
+See docs/workspace.md for ownership/lifetime/growth/exception/concurrency rules.
+The documented allocation-failure guarantee preserves the input array. All66
+performance results are Windows11/i5-14500 only. Linux diagnostics show small
+gains, no gain and slowdowns; do not generalize Windows speedups to Linux.
+Present per-call default/CAFS comparison before retained-workspace/CAFS results.
+Tests and CI include C++17 GCC/Clang/MSVC and Linux repeated-call diagnostics.
+Final integrated-header performance is complete:42,816 correct timed sorts in396
+processes, using existing60 plus six CTU IPv4 columns;
+see benchmarks/v020_validation/README.md; keep results separate from historical prototype data. Default/fresh/reuse
+lifetimes must remain separate. Do not automatically add optimizations, merge
+or publish a release. Earlier raw data remain unchanged.
+
+---
+
 # ABW v0.1.3 handoff
 
 Updated 2026-11-13. v0.1.3 adopts only validated B+D: remove unused detailed
